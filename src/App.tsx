@@ -11,14 +11,47 @@ const BOTTOM_VIDEO =
 
 function Logo({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 120 120"
+    <img src="/s-mark.png" className={className} alt="Scholia" />
+  );
+}
+
+/**
+ * Background media that always moves:
+ * - .mp4/.webm/etc → plays as a looping video
+ * - anything else (jpg/png/...) → rendered as an <img> with a slow
+ *   Ken Burns zoom, so future static images still animate.
+ */
+function MovingMedia({
+  src,
+  className,
+  videoClassName,
+}: {
+  src: string;
+  className?: string;
+  videoClassName?: string;
+}) {
+  const isVideo = /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(src);
+  if (isVideo) {
+    return (
+      <video
+        className={videoClassName ?? className}
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+    );
+  }
+  return (
+    <motion.img
+      src={src}
+      alt=""
       className={className}
-      fill="currentColor"
-      aria-label="Scholia"
-    >
-      <path d="M60 120C26.8629 120 0 93.1371 0 60V0C22.5654 0 42.2213 12.4569 52.4662 30.8691C38.4788 34.2089 28.0787 46.7902 28.0787 61.8006V63.1443C28.0787 79.9648 41.7146 93.6006 58.5353 93.6006H59.8789L59.8785 61.8006C59.8785 79.3633 74.1159 93.6006 91.6787 93.6006L91.6787 61.8006C91.6787 44.2783 77.5071 30.0661 60 30.0008L60 0H62.5352C94.2722 0 120 25.7279 120 57.4648V60C120 93.1371 93.1371 120 60 120Z" />
-    </svg>
+      initial={{ scale: 1 }}
+      animate={{ scale: 1.15 }}
+      transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+    />
   );
 }
 
@@ -35,13 +68,9 @@ export default function App() {
     >
       {/* ============ Section 1 — Video Hero ============ */}
       <section className="relative h-screen w-full flex-shrink-0 overflow-hidden">
-        <video
-          className="absolute inset-0 z-10 w-full h-full object-cover"
+        <MovingMedia
           src={HERO_VIDEO}
-          autoPlay
-          loop
-          muted
-          playsInline
+          className="absolute inset-0 z-10 w-full h-full object-cover"
         />
         <div className="absolute inset-0 z-30 pointer-events-none" />
 
@@ -113,7 +142,7 @@ export default function App() {
       </section>
 
       {/* ============ Section 2 — Red Background ============ */}
-      <section className="relative min-h-screen w-full bg-[#2F5D45] flex flex-col z-10">
+      <section className="relative min-h-screen w-full bg-[#2D4A2D] flex flex-col z-10">
         {/* Cloud transition overlays */}
         <motion.div
           style={{ y: cloudYDesktop }}
@@ -153,14 +182,10 @@ export default function App() {
 
         {/* Bottom video block */}
         <div className="relative w-full shrink-0">
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#2F5D45] to-transparent z-10 pointer-events-none" />
-          <video
-            className="w-full h-auto block object-contain"
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#2D4A2D] to-transparent z-10 pointer-events-none" />
+          <MovingMedia
             src={BOTTOM_VIDEO}
-            autoPlay
-            loop
-            muted
-            playsInline
+            className="w-full h-auto block object-contain"
           />
         </div>
       </section>
