@@ -9,9 +9,13 @@ const CLOUD_IMG =
 const BOTTOM_VIDEO =
   "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
 
-function Logo({ className }: { className?: string }) {
+function Logo({ className, variant = "white" }: { className?: string; variant?: "white" | "green" }) {
   return (
-    <img src="/s-mark.png" className={className} alt="Scholia" />
+    <img
+      src={variant === "green" ? "/s-mark-green.png" : "/s-mark.png"}
+      className={className}
+      alt="Scholia"
+    />
   );
 }
 
