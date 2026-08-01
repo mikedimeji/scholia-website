@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scholia — The AI companion for paper books</title>
+<meta name="description" content="Photograph any page of a physical book. Scholia already knows the book, finds your place, and answers anything — without spoiling what's ahead.">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F1E8;
+    --cream-dim: #EBE7DC;
+    --ink: #14130F;
+    --ink-soft: rgba(20,19,15,0.62);
+    --ink-faint: rgba(20,19,15,0.34);
+    --forest: #2F5D45;
+    --forest-light: #578F70;
+    --input-bg: #EBEBEB;
+    --max-w: 860px;
+    --edge: clamp(24px, 6vw, 72px);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .serif {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding-left: var(--edge);
+    padding-right: var(--edge);
+  }
+
+  /* ---------- Header ---------- */
+
+  header {
+    padding: 32px 0;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wordmark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  header nav {
+    display: flex;
+    gap: 32px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  header nav a {
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  header nav a:hover { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    header nav { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    padding: clamp(48px, 9vw, 120px) 0 clamp(56px, 8vw, 96px);
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--forest);
+    font-weight: 600;
+    margin: 0 0 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: clamp(40px, 6.4vw, 74px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 auto 28px;
+    max-width: 900px;
+  }
+
+  .hero h1 .dot-i { position: relative; }
+
+  .hero p.lede {
+    font-size: clamp(16px, 1.9vw, 19px);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 44px;
+  }
+
+  form.signup {
+    display: flex;
+    gap: 10px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  form.signup input[type="email"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+    background: var(--input-bg);
+    color: var(--ink);
+    padding: 15px 16px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    border-radius: 8px;
+  }
+
+  form.signup input[type="email"]::placeholder {
+    color: var(--ink-faint);
+  }
+
+  form.signup button {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 15px 26px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+
+  form.signup button:hover { background: var(--forest); }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 14px;
+  }
+
+  .form-status {
+    font-size: 13px;
+    margin-top: 14px;
+    min-height: 18px;
+    color: var(--forest);
+  }
+
+  @media (max-width: 520px) {
+    form.signup { flex-direction: column; }
+  }
+
+  /* ---------- CTA button (links out to waitlist) ---------- */
+
+  .cta-button {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--cream);
+    text-decoration: none;
+    padding: 15px 32px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .cta-button:hover { background: var(--forest); }
+
+  .closing .cta-button {
+    padding: 16px 36px;
+  }
+
+  /* ---------- Rule ---------- */
+
+  .rule {
+    border: none;
+    border-top: 1px solid rgba(20,19,15,0.1);
+    margin: 0;
+  }
+
+  /* ---------- Section shell ---------- */
+
+  section.beat {
+    padding: clamp(56px, 9vw, 112px) 0;
+  }
+
+  .beat-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(32px, 6vw, 80px);
+    align-items: center;
+  }
+
+  .beat-grid.reverse { grid-template-columns: 1.15fr 0.85fr; }
+  .beat-grid.reverse .beat-visual { order: 2; }
+  .beat-grid.reverse .beat-copy { order: 1; }
+
+  @media (max-width: 860px) {
+    .beat-grid, .beat-grid.reverse {
+      grid-template-columns: 1fr;
+    }
+    .beat-grid.reverse .beat-visual,
+    .beat-grid.reverse .beat-copy { order: initial; }
+  }
+
+  .beat-index {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--forest);
+    margin: 0 0 18px;
+  }
+
+  .beat-copy h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.16;
+    margin: 0 0 20px;
+    letter-spacing: -0.005em;
+  }
+
+  .beat-copy p {
+    font-size: 16px;
+    line-height: 1.68;
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  /* ---------- Visual: text-locator diagram ---------- */
+
+  .diagram {
+    background: var(--ink);
+    border-radius: 14px;
+    padding: 40px 36px;
+    position: relative;
+  }
+
+  .diagram .line {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(245,241,232,0.16);
+    margin-bottom: 18px;
+  }
+  .diagram .line:nth-child(4n) { width: 62%; }
+  .diagram .line:not(:nth-child(4n)) { width: 100%; }
+
+  .diagram .line.current {
+    background: var(--forest-light);
+    position: relative;
+  }
+
+  .diagram .marker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: -4px 0 22px;
+  }
+  .diagram .marker .ring {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--forest-light);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .diagram .marker .ring::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 5px; height: 5px;
+    background: var(--forest-light);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .diagram .marker span {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest-light);
+    font-weight: 600;
+  }
+
+  /* ---------- Visual: spoiler seal ---------- */
+
+  .seal {
+    background: var(--forest);
+    border-radius: 14px;
+    padding: 48px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    position: relative;
+    overflow: hidden;
+  }
+  .seal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -35deg,
+      rgba(245,241,232,0.05) 0px,
+      rgba(245,241,232,0.05) 1px,
+      transparent 1px,
+      transparent 14px
+    );
+  }
+  .seal .lock {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .seal .lock-icon {
+    width: 46px;
+    height: 34px;
+    margin: 0 auto 18px;
+    border: 3px solid var(--cream);
+    border-radius: 6px;
+    position: relative;
+  }
+  .seal .lock-icon::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--cream);
+    border-bottom: none;
+    border-radius: 13px 13px 0 0;
+  }
+  .seal .lock-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  /* ---------- Visual: single book card ---------- */
+
+  .bookcard {
+    background: var(--cream-dim);
+    border: 1px solid rgba(20,19,15,0.08);
+    border-radius: 14px;
+    padding: 40px 36px;
+  }
+  .bookcard .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+    border: 1px solid var(--forest);
+    border-radius: 100px;
+    padding: 5px 12px;
+    margin-bottom: 22px;
+  }
+  .bookcard h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .bookcard p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .bookcard .divider {
+    height: 1px;
+    background: rgba(20,19,15,0.1);
+    margin: 24px 0;
+  }
+  .bookcard .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Positioning strip ---------- */
+
+  .positioning {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .positioning .beat-index { color: var(--forest-light); }
+  .positioning .beat-copy p { color: rgba(245,241,232,0.66); }
+  .positioning .beat-copy h2 { color: var(--cream); }
+
+  .compare {
+    display: grid;
+    gap: 14px;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(245,241,232,0.12);
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row .who {
+    font-size: 15px;
+    color: rgba(245,241,232,0.9);
+  }
+  .compare-row .who strong {
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .compare-row .what {
+    font-size: 13px;
+    text-align: right;
+    color: rgba(245,241,232,0.5);
+    max-width: 280px;
+  }
+  .compare-row.us {
+    color: var(--forest-light);
+  }
+  .compare-row.us .who strong { color: var(--forest-light); }
+  .compare-row.us .what { color: rgba(87,143,112,0.85); }
+
+  /* ---------- Closing CTA ---------- */
+
+  .closing {
+    text-align: center;
+    padding: clamp(64px, 10vw, 128px) 0 clamp(80px, 10vw, 120px);
+  }
+
+  .closing h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: clamp(30px, 4.2vw, 48px);
+    margin: 0 0 18px;
+    line-height: 1.15;
+  }
+
+  .closing p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin: 0 auto 40px;
+  }
+
+  /* ---------- Footer ---------- */
+
+  footer {
+    padding: 32px 0 48px;
+  }
+  footer .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  footer .footer-row .fmark {
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 520px) {
+    footer .footer-row { flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap header-row">
+      <div class="wordmark">Scholia</div>
+      <nav>
+        <a href="#how-it-works">How it works</a>
+        <a href="#spoilers">Spoiler safety</a>
+        <a href="#waitlist">Join waitlist</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero wrap">
+      <p class="hero-eyebrow">Coming to iPhone</p>
+      <h1>Meet Scholia — the AI companion for paper books.</h1>
+      <p class="lede">
+        Photograph any page. Scholia already knows the book, finds your place,
+        and answers anything — without spoiling what's ahead.
+      </p>
+
+      <a class="cta-button" href="https://scholia.framer.website" target="_blank" rel="noopener">Join the waitlist</a>
+      <p class="form-note">No spam. One email when early access opens.</p>
+    </section>
+
+    <hr class="rule">
+
+    <section class="beat wrap" id="how-it-works">
+      <div class="beat-grid">
+        <div class="beat-copy">
+          <p class="beat-index">01 — THE IDEA</p>
+          <h2>Your position isn't a page number. It's a sentence.</h2>
+          <p>
+            Editions differ. Page 214 in your paperback isn't page 214 in
+            someone else's. Scholia never anchors to a number in the corner —
+            it reads the words on the page in front of you and finds exactly
+            where that sentence sits inside the book it already knows.
+          </p>
+        </div>
+        <div class="beat-visual">
+          <div class="diagram">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="marker">
+              <span class="ring"></span>
+              <span>Located — by passage, not page</span>
+            </div>
+            <div class="line current"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section class="beat wrap" id="spoilers">
+      <div class="beat-grid reverse">
+        <div class="beat-copy">
+          <p class="beat-index">02 — THE GUARDRAIL</p>
+          <h2>It only tells you what you've already earned.</h2>
+          <p>
+            Ask about a character, a theme, a plot thread — Scholia answers
+            fully, using everything up to your exact position. Everything
+            past it stays sealed until you get there. No spoilers, no
+            hedging, no "I can't say."
+          </p>
+        </div>
+        <div class="beat-visual">
+          <div class="seal">
+            <div class="lock">
+              <div class="lock-icon"></div>
+              <div class="lock-label">Sealed until you arrive</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section class="beat wrap">
+      <div class="beat-grid">
+        <div class="beat-copy">
+          <p class="beat-index">03 — NO SETUP</p>
+          <h2>Any paper book. No library, no scan-in.</h2>
+          <p>
+            Nothing to upload, no catalog to check against. Modern AI already
+            knows most books worth reading — Scholia just needs a photo of the
+            page you're on and the title. That's the whole setup.
+          </p>
+        </div>
+        <div class="beat-visual">
+          <div class="bookcard">
+            <span class="tag">Recognized instantly</span>
+            <h3>The Brothers Karamazov</h3>
+            <p>Fyodor Dostoevsky · translated edition, any printing</p>
+            <div class="divider"></div>
+            <div class="row">
+              <span>Position</span>
+              <span>Book III, Ch. 8</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="beat positioning">
+      <div class="wrap">
+        <p class="beat-index">HOW IT'S DIFFERENT</p>
+        <div class="compare">
+          <div class="compare-row">
+            <div class="who"><strong>Kindle's built-in AI Q&A</strong></div>
+            <div class="what">Spoiler-safe, but ebooks only — locked inside Kindle.</div>
+          </div>
+          <div class="compare-row">
+            <div class="who"><strong>EPUB-first reading apps</strong></div>
+            <div class="what">Physical book support limited to what they already have in a catalog.</div>
+          </div>
+          <div class="compare-row us">
+            <div class="who"><strong>Scholia</strong></div>
+            <div class="what">Works with any paper book you own — no ebook, no catalog, no upload.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing wrap" id="waitlist">
+      <h2>Be first to try it.</h2>
+      <p>Early access opens in waves. Join the waitlist and you'll hear from us the moment your spot is ready.</p>
+      <a class="cta-button" href="https://scholia.framer.website" target="_blank" rel="noopener">Join the waitlist</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <hr class="rule" style="margin-bottom:32px;">
+    <div class="wrap footer-row">
+      <span class="fmark">Scholia</span>
+      <span>© 2026 Scholia. Built for readers, not spoilers.</span>
+      <a href="privacy.html" style="color:inherit; text-decoration:underline;">Privacy Policy</a>
+    </div>
+  </footer>
+
+</body>
+</html>
