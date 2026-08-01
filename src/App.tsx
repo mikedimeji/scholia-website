@@ -2,21 +2,22 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 
 const WAITLIST_URL = "https://scholia.framer.website";
+const HERO_VIDEO =
+  "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/baby-track-video_crqby5.mp4";
+const CLOUD_IMG =
+  "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png";
+const BOTTOM_VIDEO =
+  "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
 
-function Wordmark({ className }: { className?: string }) {
+function Logo({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 0 120 120"
       className={className}
+      fill="currentColor"
       aria-label="Scholia"
     >
-      <path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z" />
-      <path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z" />
+      <path d="M60 120C26.8629 120 0 93.1371 0 60V0C22.5654 0 42.2213 12.4569 52.4662 30.8691C38.4788 34.2089 28.0787 46.7902 28.0787 61.8006V63.1443C28.0787 79.9648 41.7146 93.6006 58.5353 93.6006H59.8789L59.8785 61.8006C59.8785 79.3633 74.1159 93.6006 91.6787 93.6006L91.6787 61.8006C91.6787 44.2783 77.5071 30.0661 60 30.0008L60 0H62.5352C94.2722 0 120 25.7279 120 57.4648V60C120 93.1371 93.1371 120 60 120Z" />
     </svg>
   );
 }
@@ -32,24 +33,22 @@ export default function App() {
       ref={containerRef}
       className="h-screen overflow-y-auto overflow-x-hidden font-manrope bg-black relative"
     >
-      {/* ============ Section 1 — Hero ============ */}
+      {/* ============ Section 1 — Video Hero ============ */}
       <section className="relative h-screen w-full flex-shrink-0 overflow-hidden">
-        {/* Ken Burns "video" treatment over the metallic Athena */}
-        <motion.img
-          src="/athena.png"
-          alt=""
-          className="absolute inset-0 z-10 w-full h-full object-cover opacity-70"
-          initial={{ scale: 1 }}
-          animate={{ scale: 1.15 }}
-          transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        <video
+          className="absolute inset-0 z-10 w-full h-full object-cover"
+          src={HERO_VIDEO}
+          autoPlay
+          loop
+          muted
+          playsInline
         />
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black via-black/30 to-black/60 pointer-events-none" />
         <div className="absolute inset-0 z-30 pointer-events-none" />
 
         {/* Top-left logo block */}
         <div className="absolute top-[24px] left-[20px] md:top-[64px] md:left-[64px] pointer-events-auto max-w-[calc(100vw-140px)] md:max-w-none z-40">
           <div className="flex flex-row gap-[16px] md:gap-[24px] items-center">
-            <Wordmark className="w-12 h-12 md:w-16 md:h-16 text-white" />
+            <Logo className="w-12 h-12 md:w-16 md:h-16 text-white" />
             <p className="text-white text-[11px] md:text-[16px] w-[112px] md:w-auto leading-[1.2] font-semibold tracking-[0.02em]">
               <span className="hidden md:block">
                 The AI Companion
@@ -113,52 +112,55 @@ export default function App() {
         </div>
       </section>
 
-      {/* ============ Section 2 — Cream ============ */}
-      <section className="relative min-h-screen w-full bg-[#F9F7F2] flex flex-col z-10">
+      {/* ============ Section 2 — Red Background ============ */}
+      <section className="relative min-h-screen w-full bg-[#FF0000] flex flex-col z-10">
         {/* Cloud transition overlays */}
         <motion.div
           style={{ y: cloudYDesktop }}
           className="hidden md:block absolute top-0 left-0 w-full z-[100] pointer-events-none -translate-y-1/2"
         >
-          <img src="/cloud.png" className="w-full h-auto block" alt="" />
+          <img src={CLOUD_IMG} className="w-full h-auto block" referrerPolicy="no-referrer" alt="" />
         </motion.div>
         <motion.div
           style={{ y: cloudYMobile }}
           className="block md:hidden absolute top-0 left-0 w-full z-[100] pointer-events-none -translate-y-1/2"
         >
-          <img src="/cloud.png" className="w-full h-auto block" alt="" />
+          <img src={CLOUD_IMG} className="w-full h-auto block" referrerPolicy="no-referrer" alt="" />
         </motion.div>
 
         {/* Content */}
         <div className="flex-1 flex flex-col items-center w-full pt-[100px] md:pt-[400px]">
           <div className="flex flex-col items-center w-full px-8 text-center z-20 relative max-w-[900px] h-auto md:h-[620px] mx-auto">
-            <Wordmark className="w-20 h-20 text-[#1A1A1A]" />
-            <p className="text-[#1A1A1A] text-[16px] h-[100px] max-w-[400px] leading-[1.6] mb-[40px] uppercase tracking-wider mx-auto mt-[32px]">
+            <Logo className="w-20 h-20 text-white" />
+            <p className="text-white text-[16px] h-[100px] max-w-[400px] leading-[1.6] mb-[40px] uppercase tracking-wider mx-auto mt-[32px]">
               We built Scholia with a single purpose — to bring AI to paper books and keep
               the reader exactly where they are
             </p>
-            <p className="font-marck text-[#1A1A1A] text-[120px] leading-none mb-[32px]">
+            <p className="font-marck text-white text-[120px] leading-none mb-[32px]">
               Scholia
             </p>
             <div className="mb-[100px] md:mb-24">
-              <p className="text-[#1A1A1A] text-[16px] w-[400px] max-w-full font-light mb-[24px]">
+              <p className="text-white text-[16px] w-[400px] max-w-full font-light mb-[24px]">
                 Every question is answered from the text itself, up to the page you&rsquo;re
                 holding. Nothing ahead of you is ever revealed.
               </p>
-              <p className="text-[#1A1A1A] text-[16px] w-[400px] max-w-full font-light">
+              <p className="text-white text-[16px] w-[400px] max-w-full font-light">
                 Your book already knows where you are. Now it can talk back.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Bottom statue strip */}
+        {/* Bottom video block */}
         <div className="relative w-full shrink-0">
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#F9F7F2] to-transparent z-10 pointer-events-none" />
-          <img
-            src="/athena.png"
-            alt="Athena — Scholia's muse"
-            className="w-full h-auto block object-contain opacity-60"
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#FF0000] to-transparent z-10 pointer-events-none" />
+          <video
+            className="w-full h-auto block object-contain"
+            src={BOTTOM_VIDEO}
+            autoPlay
+            loop
+            muted
+            playsInline
           />
         </div>
       </section>
