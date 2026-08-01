@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Scholia</title>
+<meta name="description" content="How Scholia collects, uses, and protects information.">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F1E8;
+    --cream-dim: #EBE7DC;
+    --ink: #14130F;
+    --ink-soft: rgba(20,19,15,0.62);
+    --ink-faint: rgba(20,19,15,0.34);
+    --forest: #2F5D45;
+    --forest-light: #578F70;
+    --max-w: 860px;
+    --edge: clamp(24px, 6vw, 72px);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .serif { font-family: 'Cormorant Garamond', serif; }
+
+  a { color: var(--forest); }
+
+  .wrap {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding-left: var(--edge);
+    padding-right: var(--edge);
+  }
+
+  header { padding: 32px 0; }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wordmark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  header nav a {
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  header nav a:hover { color: var(--ink); }
+
+  .rule {
+    border: none;
+    border-top: 1px solid rgba(20,19,15,0.1);
+    margin: 0;
+  }
+
+  main.wrap {
+    padding: clamp(48px, 8vw, 88px) var(--edge) clamp(64px, 10vw, 120px);
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--forest);
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.1;
+    margin: 0 0 12px;
+  }
+
+  .updated {
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin: 0 0 56px;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 26px;
+    margin: 48px 0 14px;
+  }
+
+  h2:first-of-type { margin-top: 0; }
+
+  p, li {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+  }
+
+  ul { margin: 0 0 16px; padding-left: 20px; }
+  li { margin-bottom: 8px; }
+
+  strong { color: var(--ink); font-weight: 600; }
+
+  footer { padding: 32px 0 48px; }
+  footer .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  footer .fmark {
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 520px) {
+    footer .footer-row { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap header-row">
+      <a class="wordmark" href="index.html">Scholia</a>
+      <nav><a href="index.html">Back to Scholia</a></nav>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+  <main class="wrap">
+    <p class="eyebrow">Legal</p>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated July 29, 2026</p>
+
+    <p style="background:var(--cream-dim); border-radius:10px; padding:16px 18px; font-size:14px;">
+      <strong>Beta notice:</strong> Scholia is currently in early testing and does not yet
+      have user accounts or subscriptions. This policy describes the app's current,
+      account-free design. It will be revised — and testers/users notified — before any
+      account-based or paid features launch.
+    </p>
+
+    <h2>Overview</h2>
+    <p>
+      Scholia is an iOS app that helps readers of physical books get spoiler-free
+      answers about the book they're holding. This policy explains what information
+      the app and its supporting services handle, why, and for how long. Scholia is
+      built around a simple principle: collect as little as possible, and never
+      store the words scanned from a reader's book.
+    </p>
+
+    <h2>Information Scholia Collects</h2>
+    <p>Scholia does not require an account, name, or email address to use the app. The information it processes falls into these categories:</p>
+    <ul>
+      <li><strong>Anonymous device identifier.</strong> On first launch, the app generates a random identifier stored only on the device. It is sent with each request solely to enforce a daily free-question limit and is never linked to a name, email, or Apple ID.</li>
+      <li><strong>Book information.</strong> The title and author of books a reader adds to their library are sent to Scholia's server so it can retrieve chapter information and answer questions about that book.</li>
+      <li><strong>Scanned page text.</strong> When a reader photographs a page, the text is recognized on-device using Apple's built-in text recognition (Vision framework) and is never uploaded as an image. The recognized text is sent to Scholia's server only to determine reading position and answer the reader's question in that moment. It is not stored after the request completes.</li>
+      <li><strong>Chat messages.</strong> Questions typed into the chat, and the AI's answers, are sent to Scholia's server to generate a response. They are not stored server-side; the ongoing conversation lives only in the app on the reader's device.</li>
+      <li><strong>Optional feedback.</strong> If a reader taps a thumbs-up or thumbs-down on an answer, that rating along with the associated question and answer text is stored anonymously (tied only to the device identifier, never a name) for up to 30 days to help improve answer quality, then automatically deleted.</li>
+      <li><strong>Book search queries.</strong> Titles or authors typed while searching for a book are sent to Google Books and Open Library to return search results.</li>
+    </ul>
+
+    <h2>How Information Is Used</h2>
+    <p>Information described above is used only to operate Scholia's core features: finding a reader's position in a book, answering questions without revealing spoilers, and searching for books to add to a library. Scholia does not sell information, use it for advertising, or build profiles of readers across sessions beyond the anonymous daily rate limit.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>Scholia's server relies on the following services to function:</p>
+    <ul>
+      <li><strong>Anthropic (Claude models).</strong> Book titles, scanned page text, and chat messages are sent to Anthropic's API to generate answers. This data is processed by Anthropic in accordance with its own <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">privacy policy</a> and commercial API terms.</li>
+      <li><strong>Google Books API and Open Library.</strong> Search queries (book title or author text typed by the reader) are sent to these services to return book search results.</li>
+      <li><strong>Cloudflare Workers &amp; KV.</strong> Scholia's server logic and the rate-limit/feedback storage described above run on Cloudflare's infrastructure.</li>
+    </ul>
+    <p>These providers may process requests in accordance with their own privacy policies.</p>
+
+    <h2>What Stays On the Device</h2>
+    <p>A reader's library, reading position, and full chat history are stored locally on their iPhone using Apple's on-device storage (SwiftData) and are not backed up to any Scholia server. Uninstalling the app removes this data.</p>
+
+    <h2>Data Retention</h2>
+    <p>Scholia's server does not persist book titles, scanned page text, or chat content after a request is served. Anonymous feedback ratings are retained for at most 30 days. Rate-limit counters are retained for at most 48 hours.</p>
+
+    <h2>Children's Privacy</h2>
+    <p>Scholia is not directed at children under 13 and does not knowingly collect information from them.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>This policy may be updated as Scholia's features evolve. Material changes will be reflected here with an updated date at the top of this page.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy can be sent to <a href="mailto:impusgreco@gmail.com">impusgreco@gmail.com</a>.</p>
+  </main>
+
+  <footer>
+    <hr class="rule" style="margin-bottom:32px;">
+    <div class="wrap footer-row">
+      <span class="fmark">Scholia</span>
+      <span>© 2026 Scholia. Built for readers, not spoilers.</span>
+    </div>
+  </footer>
+
+</body>
+</html>
