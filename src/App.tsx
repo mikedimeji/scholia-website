@@ -113,7 +113,7 @@ export default function App() {
       </section>
 
       {/* ============ Section 2 — Red Background ============ */}
-      <section className="relative min-h-screen w-full bg-[#FF0000] flex flex-col z-10">
+      <section className="relative min-h-screen w-full bg-[#2F5D45] flex flex-col z-10">
         {/* Cloud transition overlays */}
         <motion.div
           style={{ y: cloudYDesktop }}
@@ -153,7 +153,7 @@ export default function App() {
 
         {/* Bottom video block */}
         <div className="relative w-full shrink-0">
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#FF0000] to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#2F5D45] to-transparent z-10 pointer-events-none" />
           <video
             className="w-full h-auto block object-contain"
             src={BOTTOM_VIDEO}
