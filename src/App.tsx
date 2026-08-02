@@ -6,8 +6,6 @@ const HERO_VIDEO =
   "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/baby-track-video_crqby5.mp4";
 const CLOUD_IMG =
   "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png";
-const BOTTOM_VIDEO =
-  "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/track-video_2_haxdch.mp4";
 
 function Logo({ className, variant = "white" }: { className?: string; variant?: "white" | "green" }) {
   return (
@@ -182,15 +180,6 @@ export default function App() {
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Bottom video block */}
-        <div className="relative w-full shrink-0">
-          <div className="absolute top-0 left-0 w-full h-[100px] bg-gradient-to-b from-[#2D4A2D] to-transparent z-10 pointer-events-none" />
-          <MovingMedia
-            src={BOTTOM_VIDEO}
-            className="w-full h-auto block object-contain"
-          />
         </div>
       </section>
     </main>
