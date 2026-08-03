@@ -27,14 +27,17 @@ function Mark({ className }: { className?: string }) {
  * colour change happens behind the clouds instead of on a visible straight line.
  * `fadeTo` should be the background colour of the section below.
  */
-function CloudDivider({ from, to }: { from: string; to: string }) {
-  // The cloud PNG is largely transparent, so the divider carries its own
-  // gradient from the section above to the section below — otherwise the page
-  // background shows through the gaps as black bands.
+function CloudDivider({ to }: { to: string }) {
+  // The top half MUST stay transparent: the section above shows through it.
+  // Painting a colour there draws exactly the hard seam we're trying to hide.
+  // The bottom fades to the next section's colour, so no page background
+  // (black) can show through the transparent parts of the cloud art.
   return (
     <div
       className={`pointer-events-none relative z-30 overflow-hidden ${site.clouds.dividerPullUp} ${site.clouds.dividerHeight}`}
-      style={{ background: `linear-gradient(to bottom, ${from} 0%, ${from} 32%, ${to} 88%, ${to} 100%)` }}
+      style={{
+        background: `linear-gradient(to bottom, transparent 0%, transparent 42%, ${to} 88%, ${to} 100%)`,
+      }}
     >
       <img
         src={site.clouds.top}
@@ -224,7 +227,7 @@ function HowItWorks() {
     <section
       id="how-it-works"
       ref={ref}
-      className="relative px-4 pb-32 pt-48 sm:px-10 sm:pt-56 md:px-16 lg:px-28 lg:pb-40 lg:pt-72"
+      className="relative px-4 pb-16 pt-48 sm:px-10 sm:pt-56 md:px-16 lg:px-28 lg:pb-24 lg:pt-72"
       style={{ backgroundColor: site.colors.deepGreen }}
     >
       <div className="mx-auto max-w-5xl text-center">
@@ -292,8 +295,8 @@ function FAQ() {
     <section
       id="faq"
       ref={ref}
-      className="relative px-4 pt-48 sm:px-10 sm:pt-56 md:px-16 lg:px-28 lg:pt-72"
-      style={{ backgroundColor: site.colors.darkGreen, paddingBottom: site.faq.paddingBottom }}
+      className="relative px-4 pt-8 sm:px-10 md:px-16 lg:px-28"
+      style={{ backgroundColor: site.colors.deepGreen, paddingBottom: site.faq.paddingBottom }}
     >
       <h2 className="reveal flex items-baseline justify-center gap-1 text-center font-arsenica text-4xl text-white sm:text-5xl md:text-7xl">
         <span>Q</span>
@@ -383,20 +386,17 @@ export default function App() {
         <DoveMark className="pointer-events-none absolute -bottom-12 right-6 z-20 w-24 sm:right-10 sm:w-32 md:w-40 lg:right-16 lg:w-56 xl:w-64" />
       </div>
 
-      {/* why → how it works */}
-      <CloudDivider from={site.colors.deepGreen} to={site.colors.deepGreen} />
+      {/* why → how it works: artwork to green, needs hiding */}
+      <CloudDivider to={site.colors.deepGreen} />
       <Section pullUp>
         <HowItWorks />
       </Section>
 
-      {/* how it works → faq */}
-      <CloudDivider from={site.colors.deepGreen} to={site.colors.darkGreen} />
-      <Section pullUp>
-        <FAQ />
-      </Section>
+      {/* how it works → faq: same colour, no seam to hide, so no clouds */}
+      <FAQ />
 
-      {/* faq → quote */}
-      <CloudDivider from={site.colors.darkGreen} to={site.colors.darkGreen} />
+      {/* faq → quote: green to artwork, needs hiding */}
+      <CloudDivider to={site.colors.deepGreen} />
       <Section pullUp>
         <QuoteBanner />
       </Section>
