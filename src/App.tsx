@@ -123,7 +123,7 @@ function Hero() {
 
 function TransitionCloud() {
   return (
-    <div className="relative z-20 -mt-24 sm:-mt-32 md:-mt-40 lg:-mt-48">
+    <div className={`relative z-20 ${site.clouds.topOverlapClass}`}>
       <img src={site.clouds.top} className="pointer-events-none w-full" alt="" />
     </div>
   );
@@ -345,7 +345,7 @@ export default function App() {
       <Navbar />
       <Hero />
       <TransitionCloud />
-      <div className="relative -mt-16 sm:-mt-20 md:-mt-24 lg:-mt-28">
+      <div className={`relative ${site.clouds.showcaseOverlapClass}`}>
         <Showcase />
         <DoveMark className="pointer-events-none absolute -bottom-12 right-6 z-20 w-24 sm:right-10 sm:w-32 md:w-40 lg:right-16 lg:w-56 xl:w-64" />
       </div>
