@@ -47,7 +47,6 @@ export const site = {
   clouds: {
     // Painted cloud band. Local fallbacks: "/cloud-top.png", "/cloud-bottom.png"
     top: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
-    bottom: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
     // How far each layer pulls up over the section above it (Tailwind classes).
     // Bigger negative margins = more overlap = softer, more hidden seam.
     topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96",

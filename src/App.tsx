@@ -224,8 +224,10 @@ function ParallaxCloud() {
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight;
     const progress = 1 - rect.bottom / (vh + rect.height);
-    const offset = progress * 30;
-    el.style.transform = `translateY(${60 - offset}%)`;
+    // Drift upward only. The section is overflow-hidden, so any positive
+    // translate would push the cloud past the bottom edge and clip it flat.
+    const offset = progress * 12;
+    el.style.transform = `translateY(${-offset}%)`;
   }, []);
 
   useParallaxScroll(handleScroll);
@@ -236,7 +238,7 @@ function ParallaxCloud() {
       src={site.clouds.top}
       className="pointer-events-none absolute bottom-0 left-0 z-10 w-full"
       alt=""
-      style={{ transform: "translateY(60%)" }}
+      style={{ transform: "translateY(0%)" }}
     />
   );
 }
@@ -261,20 +263,6 @@ function useParallaxScroll(callback: () => void) {
 function QuoteBanner() {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  const handleScroll = useCallback(() => {
-    const el = imgRef.current;
-    if (!el) return;
-    const section = el.closest("section");
-    if (!section) return;
-    const rect = section.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const progress = 1 - rect.bottom / (vh + rect.height);
-    const offset = progress * 80;
-    el.style.transform = `translateY(${-offset}px)`;
-  }, []);
-  useParallaxScroll(handleScroll);
 
   return (
     <section
@@ -285,12 +273,6 @@ function QuoteBanner() {
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
         {site.quote.text} <span className="font-light italic">{site.quote.italicText}</span>
       </p>
-      <img
-        ref={imgRef}
-        src={site.clouds.bottom}
-        className="pointer-events-none absolute -bottom-16 left-0 z-10 w-full"
-        alt=""
-      />
     </section>
   );
 }
