@@ -4,18 +4,19 @@ import { useScrollReveal } from "./useScrollReveal";
 import { site } from "./content";
 
 // ============================================================================
-// All words, media URLs, links, and Q&A content live in src/content.ts.
+// All words, media URLs, links, colours, and FAQ content live in src/content.ts.
 // This file is layout + styling only — edit it for visual changes.
 // ============================================================================
 
-const LOGO_PATH =
-  "M 64 128 L 64.5 128 L 32 95 L 0 64 L 0 0 L 64 0 L 128 64 L 128 64.5 L 161 32 L 192 0 L 256 0 L 256 64 L 192 128 L 128 128 L 128 192 L 96 223 L 63.5 256 L 0 256 L 0 192 Z M 256 192 L 224 223 L 191.5 256 L 128 256 L 128 192 L 192 128 L 256 128 Z";
-
-function Logo({ className }: { className?: string }) {
+function Mark({ className }: { className?: string }) {
+  // Circular cream badge so the square artwork sits naturally on the glass nav.
   return (
-    <svg viewBox="0 0 256 256" className={className} fill="white" aria-label={site.brand.logoAriaLabel}>
-      <path d={LOGO_PATH} />
-    </svg>
+    <span
+      className={`inline-flex items-center justify-center overflow-hidden rounded-full ring-1 ring-white/30 ${className ?? ""}`}
+      style={{ backgroundColor: site.colors.cream }}
+    >
+      <img src={site.brand.markSrc} alt={site.brand.logoAriaLabel} className="h-full w-full scale-[1.18] object-cover" />
+    </span>
   );
 }
 
@@ -50,14 +51,14 @@ const navLinkClass =
 function Navbar() {
   return (
     <nav className="fixed left-1/2 top-4 z-50 -translate-x-1/2 sm:top-6">
-      <div className="liquid-glass flex items-center gap-4 rounded-full px-4 py-2.5 sm:gap-12 sm:px-10 sm:py-3">
+      <div className="liquid-glass flex items-center gap-4 rounded-full px-4 py-2.5 sm:gap-10 sm:px-8 sm:py-3">
         {site.nav.left.map((link) => (
           <a key={link.label} href={link.href} className={navLinkClass}>
             {link.label}
           </a>
         ))}
         <a href="#" aria-label={site.brand.logoAriaLabel}>
-          <Logo className="h-5 w-5 transition-transform hover:scale-110 sm:h-7 sm:w-7" />
+          <Mark className="h-7 w-7 transition-transform hover:scale-110 sm:h-9 sm:w-9" />
         </a>
         {site.nav.right.map((link) => (
           <a key={link.label} href={link.href} className={navLinkClass}>
@@ -95,11 +96,13 @@ function Hero() {
           {site.hero.eyebrowSub}
         </p>
         <h1
-          className="hero-fade-up mt-6 text-5xl leading-[1.05] tracking-wide drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)] sm:text-7xl md:text-[7rem]"
+          className="hero-fade-up mt-6 text-6xl leading-[1.05] tracking-wide drop-shadow-[0_2px_24px_rgba(0,0,0,0.25)] sm:text-8xl md:text-[8.5rem]"
           style={{ animationDelay: "0.25s" }}
         >
           <span className="font-arsenica block">{site.hero.headingSerif}</span>
-          <span className="block font-semibold tracking-tight">{site.hero.headingSans}</span>
+          {site.hero.headingSans && (
+            <span className="block font-semibold tracking-tight">{site.hero.headingSans}</span>
+          )}
         </h1>
         <p
           className="hero-fade-up font-arsenica mt-8 max-w-xl text-sm text-white/90 sm:text-lg md:text-xl"
@@ -135,6 +138,7 @@ function Showcase() {
 
   return (
     <section
+      id="why"
       ref={ref}
       className="relative min-h-screen w-full overflow-hidden"
       style={{
@@ -168,20 +172,77 @@ function Showcase() {
       </div>
       <div
         className="absolute bottom-0 left-0 h-48 w-full"
-        style={{ background: `linear-gradient(to bottom, transparent, ${site.showcase.bottomFadeColor})` }}
+        style={{ background: `linear-gradient(to bottom, transparent, ${site.colors.deepGreen})` }}
       />
     </section>
   );
 }
 
-function QAndA() {
+function HowItWorks() {
+  const ref = useRef<HTMLDivElement>(null);
+  useScrollReveal(ref);
+
+  return (
+    <section
+      id="how-it-works"
+      ref={ref}
+      className="relative overflow-hidden px-4 pb-40 pt-24 sm:px-10 md:px-16 lg:px-28 lg:pt-32"
+      style={{ backgroundColor: site.colors.deepGreen }}
+    >
+      <div className="mx-auto max-w-5xl text-center">
+        <p className="reveal font-inter text-[10px] uppercase tracking-[0.4em] text-white/60 sm:text-xs">
+          {site.howItWorks.eyebrow}
+        </p>
+        <h2 className="reveal mt-4 font-arsenica text-4xl tracking-wide text-white sm:text-5xl md:text-6xl">
+          {site.howItWorks.heading}
+        </h2>
+        <p
+          className="reveal font-arsenica mx-auto mt-6 max-w-2xl text-lg leading-snug text-white/80 sm:text-xl md:text-2xl"
+          style={{ animationDelay: "0.1s" }}
+        >
+          {site.howItWorks.intro}
+        </p>
+      </div>
+
+      <div className="relative z-20 mx-auto mt-20 grid max-w-5xl grid-cols-1 gap-x-16 gap-y-14 sm:grid-cols-2">
+        {site.howItWorks.steps.map((step, i) => (
+          <div key={step.n} className="reveal" style={{ animationDelay: `${(i + 1) * 0.12}s` }}>
+            <div className="flex items-baseline gap-4">
+              <span className="font-arsenica text-3xl text-white/35 sm:text-4xl">{step.n}</span>
+              <h3 className="font-arsenica text-xl uppercase tracking-wide text-white sm:text-2xl">
+                {step.title}
+              </h3>
+            </div>
+            <div className="mt-4 h-px w-full bg-white/15" />
+            <p className="font-inter mt-4 text-xs leading-relaxed text-white/65 sm:text-sm">{step.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="reveal relative z-20 mt-16 text-center" style={{ animationDelay: "0.6s" }}>
+        <a
+          href={site.howItWorks.cta.href}
+          target="_blank"
+          rel="noreferrer"
+          className="font-inter inline-block rounded-[50%] border border-white/50 px-10 py-4 text-[10px] uppercase tracking-[0.25em] text-white transition-all duration-300 hover:scale-[1.03] hover:border-white hover:bg-white/10 sm:px-12 sm:py-5 sm:text-xs"
+        >
+          {site.howItWorks.cta.label}
+        </a>
+      </div>
+
+      <ParallaxCloud />
+    </section>
+  );
+}
+
+function FAQ() {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
 
   let delayIndex = 0;
   const nextDelay = () => {
     delayIndex += 1;
-    return `${(delayIndex * 0.12).toFixed(2)}s`;
+    return `${(delayIndex * 0.1).toFixed(2)}s`;
   };
 
   const renderItem = (item: { q: string; a: string }, key: number) => (
@@ -193,9 +254,10 @@ function QAndA() {
 
   return (
     <section
+      id="faq"
       ref={ref}
-      className="relative overflow-hidden px-4 pt-20 sm:px-10 md:px-16 lg:px-28 lg:pt-32"
-      style={{ backgroundColor: site.qa.backgroundColor, paddingBottom: site.qa.paddingBottom }}
+      className="relative overflow-hidden px-4 pt-24 sm:px-10 md:px-16 lg:px-28 lg:pt-32"
+      style={{ backgroundColor: site.colors.darkGreen, paddingBottom: site.faq.paddingBottom }}
     >
       <h2 className="reveal flex items-baseline justify-center gap-1 text-center font-arsenica text-4xl text-white sm:text-5xl md:text-7xl">
         <span>Q</span>
@@ -204,11 +266,9 @@ function QAndA() {
       </h2>
 
       <div className="relative z-20 mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-10 md:grid-cols-2 md:gap-20">
-        <div className="flex flex-col gap-12">{site.qa.left.map(renderItem)}</div>
-        <div className="flex flex-col gap-12 md:mt-24">{site.qa.right.map(renderItem)}</div>
+        <div className="flex flex-col gap-12">{site.faq.left.map(renderItem)}</div>
+        <div className="flex flex-col gap-12 md:mt-24">{site.faq.right.map(renderItem)}</div>
       </div>
-
-      <ParallaxCloud />
     </section>
   );
 }
@@ -267,7 +327,7 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vh]"
+      className={`relative flex h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vh] ${site.clouds.quoteOverlapClass}`}
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
@@ -331,7 +391,8 @@ export default function App() {
         <Showcase />
         <DoveMark className="pointer-events-none absolute -bottom-12 right-6 z-20 w-24 sm:right-10 sm:w-32 md:w-40 lg:right-16 lg:w-56 xl:w-64" />
       </div>
-      <QAndA />
+      <HowItWorks />
+      <FAQ />
       <QuoteBanner />
       <Footer />
     </div>

@@ -8,18 +8,26 @@ export const site = {
   brand: {
     name: "Scholia",
     logoAriaLabel: "Scholia",
+    markSrc: "/scholia-mark.png", // shown as a circular badge in the navbar
+  },
+
+  // --- Palette ----------------------------------------------------------------
+  colors: {
+    deepGreen: "#1E3A2C", // How It Works background
+    darkGreen: "#16281F", // FAQ background (one step deeper)
+    cream: "#F5F1E8",
   },
 
   // --- Navbar ----------------------------------------------------------------
   // Two links render on each side of the center logo, in order.
   nav: {
     left: [
-      { label: "Gallery", href: "#gallery" },
-      { label: "Talents", href: "#talents" },
+      { label: "How It Works", href: "#how-it-works" },
+      { label: "Why Scholia", href: "#why" },
     ],
     right: [
-      { label: "Journal", href: "#journal" },
-      { label: "Story", href: "#story" },
+      { label: "FAQ", href: "#faq" },
+      { label: "Early Access", href: "https://scholia.framer.website" },
     ],
   },
 
@@ -27,74 +35,111 @@ export const site = {
   hero: {
     videoUrl:
       "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260611_130946_e6793cc7-6b6f-4035-9852-44290b781ae6.mp4",
-    eyebrow: "Scholia", // small caps line 1
-    eyebrowSub: "Reading Companion", // small caps line 2
-    headingSerif: "DIGITAL", // first display line (serif font)
-    headingSans: "ARCHIVE", // second display line (sans, semibold)
+    eyebrow: "Reading Companion", // small caps line 1
+    eyebrowSub: "For Any Paper Book", // small caps line 2
+    headingSerif: "SCHOLIA", // display line (serif)
+    headingSans: "", // leave empty for a single-word headline
     description:
-      "A showcase honoring the readers, thinkers and makers who turned every paper book into a conversation worth having.",
+      "Photograph any page of any physical book. Scholia already knows the book, finds your place, and answers anything — without spoiling what's ahead.",
     cta: {
-      label: "Enter Gallery",
+      label: "Get Early Access",
       href: "https://scholia.framer.website",
       newTab: true,
     },
   },
 
   // --- Cloud / fog transition assets ------------------------------------------
-  // These are painted cloud PNGs whose job is to HIDE the seam between two
-  // differently-coloured sections. Swap the URLs to change the transition art.
-  // (Local fallbacks live at /cloud-top.png and /cloud-bottom.png.)
+  // Painted cloud band whose job is to HIDE the seam between two differently
+  // coloured sections. Local fallback: "/cloud-top.png"
   clouds: {
-    // Painted cloud band. Local fallbacks: "/cloud-top.png", "/cloud-bottom.png"
     top: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
     // How far each layer pulls up over the section above it (Tailwind classes).
-    // Bigger negative margins = more overlap = softer, more hidden seam.
     topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96",
     showcaseOverlapClass: "-mt-40 sm:-mt-48 md:-mt-56 lg:-mt-64",
+    quoteOverlapClass: "-mt-24 sm:-mt-32 md:-mt-40",
   },
 
-  // --- Showcase (full-screen image + copy) ------------------------------------
+  // --- Why Scholia (full-screen image + copy) ---------------------------------
   showcase: {
     backgroundUrl:
       "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260616_040223_98d314e9-b8b4-4218-bcbd-18ffc38032ac.png&w=1280&q=85",
-    heading: "Still Frame",
-    // Rendered as one flowing sentence; line breaks appear on sm+ screens.
+    heading: "Why Scholia",
     subtextLines: [
       "Every reader who photographed a page, asked a question, and let",
       "Scholia meet them exactly where they left off",
       "gave a paper book a second life.",
     ],
-    cta: { label: "View Their Archive", href: "#story" },
-    // Gradient at the section's bottom edge, blending into the Q&A background.
-    bottomFadeColor: "#410C01",
+    cta: { label: "See How It Works", href: "#how-it-works" },
   },
 
-  // --- Q&A section -------------------------------------------------------------
-  qa: {
-    backgroundColor: "#410C01",
-    paddingBottom: "28vh",
+  // --- How It Works -------------------------------------------------------------
+  howItWorks: {
+    eyebrow: "Four steps",
+    heading: "How It Works",
+    intro:
+      "No account to set up, no ebook to buy, no page numbers to type. Open the app, point your camera, start asking.",
+    steps: [
+      {
+        n: "01",
+        title: "Add your book",
+        body:
+          "Search any title. Scholia already understands the book — its chapters, its characters, its ideas — before you open it.",
+      },
+      {
+        n: "02",
+        title: "Photograph your page",
+        body:
+          "Point your camera at whatever page you're on. The words are read on your device, and Scholia works out exactly where you are — in any edition, any printing, any translation.",
+      },
+      {
+        n: "03",
+        title: "Ask anything",
+        body:
+          "Who is this character again? Explain this page like I'm twelve. What should I know before the next chapter? Answers arrive in seconds, in plain language.",
+      },
+      {
+        n: "04",
+        title: "Never get spoiled",
+        body:
+          "Scholia only knows what you've read. Everything past your page stays sealed until you get there — so you can ask freely, even mid-story.",
+      },
+    ],
+    cta: { label: "Get Early Access", href: "https://scholia.framer.website" },
+  },
+
+  // --- FAQ ----------------------------------------------------------------------
+  faq: {
+    paddingBottom: "22vh",
     left: [
       {
-        q: "Welcome to Scholia. So how did the Digital Archive begin its journey?",
-        a: "Less than a year into building Scholia, we realized the hardest part wasn't the AI — it was the readers themselves, closing books mid-chapter and never picking them back up. We never stopped building because we were determined not to let that momentum die. We built a companion that remembers your place, and we've been evolving it since.",
+        q: "Welcome to Scholia. What is it, exactly?",
+        a: "A reading companion for physical books. Photograph the page you're on and ask whatever you like — what a passage means, who a character is, what you should remember before the next chapter. Scholia knows the book, and it knows how far you've read.",
       },
       {
-        q: "How did you know where to begin?",
-        a: "We didn't wait for the perfect model. We saw readers struggling to stay with dense, difficult books, put down halfway, forgotten on a shelf, and set to the task of building something that could meet them on any page, in any edition, as quickly as possible.",
+        q: "Do I need a paid plan?",
+        a: "No. Scholia is free to use with a generous daily allowance of questions, which is enough for most reading sessions. If you read heavily and want unlimited questions, Premium is available monthly or yearly — and everything you've already asked stays readable for free, forever.",
       },
       {
-        q: "So what was the first version like?",
-        a: "We were among the first to let someone photograph a physical page and get an answer anchored to exactly where they were — no page numbers, no spoilers past that point. Early readers were grateful for that restraint; they trusted us because we respected the story they hadn't finished yet.",
+        q: "How long does it take to get an answer?",
+        a: "Seconds. Photograph the page, confirm where you are, and the answer arrives before you've settled back into your chair.",
+      },
+      {
+        q: "Does it work across different editions?",
+        a: "Yes, and this is the part we're proudest of. Scholia never relies on page numbers, because your paperback and someone else's hardback don't agree on them. It reads the actual words on your page and matches them to the book itself, so any printing or translation works.",
       },
     ],
     right: [
       {
-        q: "What was the initial reaction?",
-        a: "So many people told us that just knowing the book to hand and finding their place again gave them the confidence to pick it back up after months away. The experience felt intimate — a private conversation with a book, even though everyone was reading alone, in their own room, in their own time.",
+        q: "Which books are supported?",
+        a: "Search for a title and Scholia will tell you honestly how well it knows that specific book. Popular fiction, classics and well-known non-fiction are covered in real depth. For rarer titles it leans on the page you've photographed and tells you it's doing so, rather than inventing something.",
       },
       {
-        q: "Where did you evolve from there?",
-        a: "Supporting every edition mattered more than we expected — readers don't all own the same printing, and anchoring by the book's actual text instead of page numbers meant Scholia worked no matter which copy someone was holding.",
+        q: "How accurate is it, and is it really spoiler-free?",
+        a: "Answers are anchored to the page in front of you and to the chapter you've reached, which keeps them grounded. Spoiler protection is deliberate and strict: nothing beyond your position is discussed. It's careful rather than infallible, so we tell you that plainly — and you can switch it off whenever you want the whole book on the table.",
+      },
+      {
+        q: "Are there plans for more features?",
+        a: "Plenty. Chapter recaps for when you've been away from a book, importing the shelf you already track elsewhere, and a way to look back over everything a book taught you. The core promise stays the same: your book, your page, no spoilers.",
       },
       {
         q: "Do you find there's a new appreciation for paper books?",
@@ -107,7 +152,6 @@ export const site = {
   quote: {
     backgroundUrl:
       "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260616_042421_41f4fa0b-770c-4545-a416-73a809366e49.png&w=1280&q=85",
-    // text renders first, then italicText in light italics.
     text: "Reading, memory and attention are more",
     italicText: "important than ever.",
   },
