@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { Facebook, Twitter, Linkedin, BarChart3, Aperture } from "lucide-react";
 import { useScrollReveal } from "./useScrollReveal";
 import { site } from "./content";
@@ -10,13 +10,34 @@ import { site } from "./content";
 
 function Mark({ className }: { className?: string }) {
   // Circular cream badge so the square artwork sits naturally on the glass nav.
+  // Purely decorative: not a link, no hover state.
   return (
     <span
-      className={`inline-flex items-center justify-center overflow-hidden rounded-full ring-1 ring-white/30 ${className ?? ""}`}
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-white/30 ${className ?? ""}`}
       style={{ backgroundColor: site.colors.cream }}
+      aria-label={site.brand.logoAriaLabel}
     >
-      <img src={site.brand.markSrc} alt={site.brand.logoAriaLabel} className="h-full w-full scale-[1.18] object-cover" />
+      <img src={site.brand.markSrc} alt="" className="h-full w-full scale-[1.18] object-cover" />
     </span>
+  );
+}
+
+/**
+ * A cloud band that sits BETWEEN two sections and straddles the join, so the
+ * colour change happens behind the clouds instead of on a visible straight line.
+ * `fadeTo` should be the background colour of the section below.
+ */
+function CloudDivider({ fadeTo }: { fadeTo?: string }) {
+  return (
+    <div className={`pointer-events-none relative z-30 ${site.clouds.dividerPullUp}`}>
+      <img src={site.clouds.top} className="w-full" alt="" />
+      {fadeTo && (
+        <div
+          className="absolute bottom-0 left-0 h-1/3 w-full"
+          style={{ background: `linear-gradient(to bottom, transparent, ${fadeTo})` }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -51,20 +72,24 @@ const navLinkClass =
 function Navbar() {
   return (
     <nav className="fixed left-1/2 top-4 z-50 -translate-x-1/2 sm:top-6">
-      <div className="liquid-glass flex items-center gap-4 rounded-full px-4 py-2.5 sm:gap-10 sm:px-8 sm:py-3">
-        {site.nav.left.map((link) => (
-          <a key={link.label} href={link.href} className={navLinkClass}>
-            {link.label}
-          </a>
-        ))}
-        <a href="#" aria-label={site.brand.logoAriaLabel}>
-          <Mark className="h-7 w-7 transition-transform hover:scale-110 sm:h-9 sm:w-9" />
-        </a>
-        {site.nav.right.map((link) => (
-          <a key={link.label} href={link.href} className={navLinkClass}>
-            {link.label}
-          </a>
-        ))}
+      {/* flex-1 on both link groups keeps the mark optically centred even though
+          the labels on each side are different lengths. */}
+      <div className="liquid-glass flex items-center rounded-full px-4 py-2.5 sm:px-8 sm:py-3">
+        <div className="flex flex-1 items-center justify-end gap-4 sm:gap-10">
+          {site.nav.left.map((link) => (
+            <a key={link.label} href={link.href} className={`${navLinkClass} whitespace-nowrap`}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <Mark className="mx-4 h-7 w-7 sm:mx-8 sm:h-9 sm:w-9" />
+        <div className="flex flex-1 items-center justify-start gap-4 sm:gap-10">
+          {site.nav.right.map((link) => (
+            <a key={link.label} href={link.href} className={`${navLinkClass} whitespace-nowrap`}>
+              {link.label}
+            </a>
+          ))}
+        </div>
       </div>
     </nav>
   );
@@ -147,6 +172,11 @@ function Showcase() {
         backgroundPosition: "center",
       }}
     >
+      {/* Green wash over the maroon artwork so it sits in the brand palette. */}
+      <div
+        className="absolute inset-0"
+        style={{ backgroundColor: site.showcase.tintColor, opacity: site.showcase.tintOpacity }}
+      />
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-4 py-32 text-center text-white">
         <h2 className="reveal font-arsenica text-4xl tracking-wide drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)] sm:text-5xl md:text-7xl">
           {site.showcase.heading}
@@ -178,6 +208,10 @@ function Showcase() {
   );
 }
 
+function Section({ pullUp, children }: { pullUp?: boolean; children: ReactNode }) {
+  return <div className={`relative ${pullUp ? site.clouds.sectionPullUp : ""}`}>{children}</div>;
+}
+
 function HowItWorks() {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
@@ -186,7 +220,7 @@ function HowItWorks() {
     <section
       id="how-it-works"
       ref={ref}
-      className="relative overflow-hidden px-4 pb-40 pt-24 sm:px-10 md:px-16 lg:px-28 lg:pt-32"
+      className="relative px-4 pb-32 pt-32 sm:px-10 md:px-16 lg:px-28 lg:pb-40 lg:pt-40"
       style={{ backgroundColor: site.colors.deepGreen }}
     >
       <div className="mx-auto max-w-5xl text-center">
@@ -229,8 +263,6 @@ function HowItWorks() {
           {site.howItWorks.cta.label}
         </a>
       </div>
-
-      <ParallaxCloud />
     </section>
   );
 }
@@ -256,7 +288,7 @@ function FAQ() {
     <section
       id="faq"
       ref={ref}
-      className="relative overflow-hidden px-4 pt-24 sm:px-10 md:px-16 lg:px-28 lg:pt-32"
+      className="relative px-4 pt-32 sm:px-10 md:px-16 lg:px-28 lg:pt-40"
       style={{ backgroundColor: site.colors.darkGreen, paddingBottom: site.faq.paddingBottom }}
     >
       <h2 className="reveal flex items-baseline justify-center gap-1 text-center font-arsenica text-4xl text-white sm:text-5xl md:text-7xl">
@@ -273,53 +305,6 @@ function FAQ() {
   );
 }
 
-function ParallaxCloud() {
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  const handleScroll = useCallback(() => {
-    const el = imgRef.current;
-    if (!el) return;
-    const section = el.closest("section");
-    if (!section) return;
-    const rect = section.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const progress = 1 - rect.bottom / (vh + rect.height);
-    // Drift upward only. The section is overflow-hidden, so any positive
-    // translate would push the cloud past the bottom edge and clip it flat.
-    const offset = progress * 12;
-    el.style.transform = `translateY(${-offset}%)`;
-  }, []);
-
-  useParallaxScroll(handleScroll);
-
-  return (
-    <img
-      ref={imgRef}
-      src={site.clouds.top}
-      className="pointer-events-none absolute bottom-0 left-0 z-10 w-full"
-      alt=""
-      style={{ transform: "translateY(0%)" }}
-    />
-  );
-}
-
-function useParallaxScroll(callback: () => void) {
-  useEffect(() => {
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        callback();
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [callback]);
-}
-
 function QuoteBanner() {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
@@ -327,7 +312,7 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className={`relative flex h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vh] ${site.clouds.quoteOverlapClass}`}
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vh]"
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
@@ -386,14 +371,32 @@ export default function App() {
     <div className="bg-black">
       <Navbar />
       <Hero />
+
+      {/* hero → why */}
       <TransitionCloud />
       <div className={`relative ${site.clouds.showcaseOverlapClass}`}>
         <Showcase />
         <DoveMark className="pointer-events-none absolute -bottom-12 right-6 z-20 w-24 sm:right-10 sm:w-32 md:w-40 lg:right-16 lg:w-56 xl:w-64" />
       </div>
-      <HowItWorks />
-      <FAQ />
-      <QuoteBanner />
+
+      {/* why → how it works */}
+      <CloudDivider fadeTo={site.colors.deepGreen} />
+      <Section pullUp>
+        <HowItWorks />
+      </Section>
+
+      {/* how it works → faq */}
+      <CloudDivider fadeTo={site.colors.darkGreen} />
+      <Section pullUp>
+        <FAQ />
+      </Section>
+
+      {/* faq → quote */}
+      <CloudDivider />
+      <Section pullUp>
+        <QuoteBanner />
+      </Section>
+
       <Footer />
     </div>
   );

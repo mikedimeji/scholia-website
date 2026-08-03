@@ -53,17 +53,25 @@ export const site = {
   // coloured sections. Local fallback: "/cloud-top.png"
   clouds: {
     top: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
-    // How far each layer pulls up over the section above it (Tailwind classes).
-    topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96",
+    // Each cloud divider sits BETWEEN two sections and straddles the join:
+    // `dividerPullUp` lifts the cloud over the section above,
+    // `sectionPullUp` lifts the next section up under the cloud.
+    // Bigger numbers = more overlap = more thoroughly hidden seam.
+    topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96", // hero → why
     showcaseOverlapClass: "-mt-40 sm:-mt-48 md:-mt-56 lg:-mt-64",
-    quoteOverlapClass: "-mt-24 sm:-mt-32 md:-mt-40",
+    dividerPullUp: "-mt-40 sm:-mt-52 md:-mt-64 lg:-mt-72",
+    sectionPullUp: "-mt-32 sm:-mt-40 md:-mt-52 lg:-mt-60",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------
   showcase: {
     backgroundUrl:
       "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260616_040223_98d314e9-b8b4-4218-bcbd-18ffc38032ac.png&w=1280&q=85",
-    heading: "Why Scholia",
+    heading: "Why Scholia?",
+    // The background artwork is a painted MAROON sky. This green wash pulls it
+    // toward the brand palette. Set tintOpacity to 0 to see the original art.
+    tintColor: "#1E3A2C",
+    tintOpacity: 0.55,
     subtextLines: [
       "Every reader who photographed a page, asked a question, and let",
       "Scholia meet them exactly where they left off",
