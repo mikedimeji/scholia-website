@@ -59,8 +59,13 @@ export const site = {
     // Bigger numbers = more overlap = more thoroughly hidden seam.
     topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96", // hero → why
     showcaseOverlapClass: "-mt-40 sm:-mt-48 md:-mt-56 lg:-mt-64",
-    dividerPullUp: "-mt-40 sm:-mt-52 md:-mt-64 lg:-mt-72",
-    sectionPullUp: "-mt-32 sm:-mt-40 md:-mt-52 lg:-mt-60",
+    // The divider is a fixed-height band, cropped from the cloud art, that sits
+    // exactly ON the join: pulled up half its height over the section above,
+    // with the section below pulled up the same amount. Half above, half below.
+    // Keep pullUp = half of height, or the clouds drift off the seam.
+    dividerHeight: "h-[26vw] min-h-[170px] max-h-[420px]",
+    dividerPullUp: "-mt-[13vw]",
+    sectionPullUp: "-mt-[13vw]",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------

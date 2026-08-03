@@ -33,10 +33,14 @@ function CloudDivider({ from, to }: { from: string; to: string }) {
   // background shows through the gaps as black bands.
   return (
     <div
-      className={`pointer-events-none relative z-30 ${site.clouds.dividerPullUp}`}
-      style={{ background: `linear-gradient(to bottom, ${from} 0%, ${from} 30%, ${to} 78%, ${to} 100%)` }}
+      className={`pointer-events-none relative z-30 overflow-hidden ${site.clouds.dividerPullUp} ${site.clouds.dividerHeight}`}
+      style={{ background: `linear-gradient(to bottom, ${from} 0%, ${from} 32%, ${to} 88%, ${to} 100%)` }}
     >
-      <img src={site.clouds.top} className="relative w-full" alt="" />
+      <img
+        src={site.clouds.top}
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        alt=""
+      />
     </div>
   );
 }
