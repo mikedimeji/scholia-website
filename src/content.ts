@@ -45,8 +45,9 @@ export const site = {
   // differently-coloured sections. Swap the URLs to change the transition art.
   // (Local fallbacks live at /cloud-top.png and /cloud-bottom.png.)
   clouds: {
-    top: "https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781584857/top-bg_j88wyu.png",
-    bottom: "https://res.cloudinary.com/dy5er7kv5/image/upload/q_auto/f_auto/v1781584854/bottom_bg_liw6lc.png",
+    // Painted cloud band. Local fallbacks: "/cloud-top.png", "/cloud-bottom.png"
+    top: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
+    bottom: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
     // How far each layer pulls up over the section above it (Tailwind classes).
     // Bigger negative margins = more overlap = softer, more hidden seam.
     topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96",
