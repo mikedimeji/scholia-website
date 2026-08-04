@@ -72,8 +72,8 @@ export const site = {
     // height (28vw, since the art is 1.77:1) hangs into the section above and
     // half into the section below. Those sections simply get enough padding to
     // leave room. The page is longer as a result; that is the trade.
-    clearanceClass: "pt-[32vw]", // section BELOW a seam
-    clearanceBottomClass: "pb-[32vw]", // section ABOVE a seam
+    clearanceClass: "pt-[26vw]", // section BELOW a seam (art hangs 22.6vw down)
+    clearanceBottomClass: "pb-[36vw]", // section ABOVE a seam (art rises 34vw up)
     clearanceDeepClass: "pt-[50vw]", // section under a seam whose clouds hang low
   },
 

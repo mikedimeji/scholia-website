@@ -33,7 +33,7 @@ function SeamClouds({ src, shift }: { src?: string; shift?: string }) {
     <img
       src={src ?? site.clouds.top}
       className="pointer-events-none absolute left-0 top-0 z-20 w-full select-none"
-      style={{ transform: `translateY(${shift ?? "-50%"})` }}
+      style={{ transform: `translateY(${shift ?? "-60%"})` }}
       alt=""
     />
   );
@@ -95,7 +95,7 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative min-h-[140vh] w-full overflow-hidden">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src={site.hero.videoUrl}
@@ -105,7 +105,7 @@ function Hero() {
         playsInline
       />
       <div className="absolute inset-0 bg-black/20" />
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 text-center text-white">
+      <div className={`relative z-10 flex min-h-[140vh] w-full flex-col items-center justify-center px-4 text-center text-white ${site.clouds.clearanceBottomClass}`}>
         <p
           className="hero-fade-up text-xs font-medium uppercase tracking-[0.35em] text-white/90 sm:text-sm"
           style={{ animationDelay: "0.1s" }}
@@ -162,13 +162,13 @@ function Showcase() {
         backgroundPosition: "center",
       }}
     >
-      <SeamClouds shift="-15%" />
+      <SeamClouds />
       {/* Green wash over the maroon artwork so it sits in the brand palette. */}
       <div
         className="absolute inset-0"
         style={{ backgroundColor: site.showcase.tintColor, opacity: site.showcase.tintOpacity }}
       />
-      <div className={`relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-4 text-center text-white ${site.clouds.clearanceDeepClass} ${site.clouds.clearanceBottomClass}`}>
+      <div className={`relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-4 text-center text-white ${site.clouds.clearanceClass} ${site.clouds.clearanceBottomClass}`}>
         <h2 className="reveal font-arsenica text-4xl tracking-wide drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)] sm:text-5xl md:text-7xl">
           {site.showcase.heading}
         </h2>
