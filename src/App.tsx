@@ -63,13 +63,23 @@ function SeamClouds({
       ? `linear-gradient(to bottom, ${blendFrom} 0%, ${blendFrom} 38%, transparent 66%, transparent 100%)`
       : undefined;
 
+  // The artwork is a full 16:9 cloudscape — at full width it is nearly as tall
+  // as the viewport, so it is cropped to a band (object-position 60% shows the
+  // dense cloud mass, which sits low in the image). The mask fades the crop's
+  // top and bottom so the cut never reads as an edge.
+  const fade =
+    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 10%, #000 26%, #000 68%, rgba(0,0,0,0.5) 88%, transparent 100%)";
   return (
     <div
-      className="pointer-events-none absolute left-0 top-0 z-20 w-full"
-      style={{ transform: `translateY(${site.clouds.seamShift})` }}
+      className={`pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 overflow-hidden ${site.clouds.bandHeight}`}
     >
       {blend && <div className="absolute inset-0" style={{ background: blend }} />}
-      <img src={src ?? site.clouds.top} className="relative w-full select-none" alt="" />
+      <img
+        src={src ?? site.clouds.top}
+        className="absolute inset-0 h-full w-full select-none object-cover"
+        style={{ objectPosition: "50% 60%", maskImage: fade, WebkitMaskImage: fade }}
+        alt=""
+      />
     </div>
   );
 }
@@ -336,7 +346,7 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vw]"
+      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[30vh]"
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
       <SeamClouds blendFrom={site.colors.deepGreen} />

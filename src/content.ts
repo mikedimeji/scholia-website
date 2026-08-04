@@ -67,13 +67,11 @@ export const site = {
     //
     // The only tunable: how much top padding a section needs so its text clears
     // the lower half of the clouds. Increase if headings feel crowded.
-    // How far the seam cloud is lifted, as a share of its own height. 60% puts
-    // the artwork's dense band (which sits low in the image) right on the join.
-    seamShift: "-60%",
-    // The art is 1.77:1, lifted 60%, so it hangs 22.6vw below each seam.
-    // 25vw clears it at every width with a small margin. Both scale with vw, so
-    // they never drift apart the way a vh/vw mix does.
-    clearanceClass: "pt-[25vw]",
+    // Cloud band height, straddling each seam (half above, half below). Keep it
+    // well under 50vh or the clouds swallow the viewport and cover section text.
+    bandHeight: "h-[40vh]",
+    // Text clearance: half the band (20vh) plus breathing room.
+    clearanceClass: "pt-[26vh]",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------
