@@ -55,19 +55,17 @@ export const site = {
     top: "https://soft-zoom-63098134.figma.site/_assets/v11/b4653ee7c7405b6d07f43fffdc3cbdd84d9dfc70.png",
     bottom: "https://soft-zoom-63098134.figma.site/_assets/v11/c536f05c69de65726fe598137058c1e477d2badc.png",
     dove: "https://soft-zoom-63098134.figma.site/_assets/v11/779ed5f1e5b99d3fa582a54133271d32deee567e.png",
-    // Each cloud divider sits BETWEEN two sections and straddles the join:
-    // `dividerPullUp` lifts the cloud over the section above,
-    // `sectionPullUp` lifts the next section up under the cloud.
-    // Bigger numbers = more overlap = more thoroughly hidden seam.
-    topOverlapClass: "-mt-64 sm:-mt-72 md:-mt-80 lg:-mt-96", // hero → why
-    showcaseOverlapClass: "-mt-40 sm:-mt-48 md:-mt-56 lg:-mt-64",
-    // The divider is a fixed-height band, cropped from the cloud art, that sits
-    // exactly ON the join: pulled up half its height over the section above,
-    // with the section below pulled up the same amount. Half above, half below.
-    // Keep pullUp = half of height, or the clouds drift off the seam.
-    dividerHeight: "h-[26vw] min-h-[170px] max-h-[420px]",
-    dividerPullUp: "-mt-[13vw]",
-    sectionPullUp: "-mt-[13vw]",
+    // Clouds are absolutely positioned at the TOP of a section and shifted up by
+    // half their own rendered height (-translate-y-1/2). That centres them on the
+    // seam for ANY image aspect ratio — no cropping, no guessed margins, and the
+    // section above sits behind the top half while this section's own background
+    // sits behind the bottom half, so no page background can show through.
+    //
+    // The only tunable: how much top padding a section needs so its text clears
+    // the lower half of the clouds. Increase if headings feel crowded.
+    // Sized so text clears the clouds even if the artwork is as tall as 2:1
+    // (half of a 2:1 image at full width = 25vw). Safe for any wider art.
+    clearanceClass: "pt-[27vw]",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------

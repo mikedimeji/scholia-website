@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from "react";
+import { useRef } from "react";
 import { Facebook, Twitter, Linkedin, BarChart3, Aperture } from "lucide-react";
 import { useScrollReveal } from "./useScrollReveal";
 import { site } from "./content";
@@ -27,24 +27,19 @@ function Mark({ className }: { className?: string }) {
  * colour change happens behind the clouds instead of on a visible straight line.
  * `fadeTo` should be the background colour of the section below.
  */
-function CloudDivider({ to, src }: { to: string; src?: string }) {
-  // The top half MUST stay transparent: the section above shows through it.
-  // Painting a colour there draws exactly the hard seam we're trying to hide.
-  // The bottom fades to the next section's colour, so no page background
-  // (black) can show through the transparent parts of the cloud art.
+/**
+ * Clouds that straddle the seam at the TOP of the section they're placed in.
+ * `-translate-y-1/2` shifts the image up by half its own height, so it centres
+ * on the join whatever the artwork's dimensions. The parent section must be
+ * `relative` and must NOT be overflow-hidden, or the overhang gets clipped.
+ */
+function SeamClouds({ src }: { src?: string }) {
   return (
-    <div
-      className={`pointer-events-none relative z-30 overflow-hidden ${site.clouds.dividerPullUp} ${site.clouds.dividerHeight}`}
-      style={{
-        background: `linear-gradient(to bottom, transparent 0%, transparent 42%, ${to} 88%, ${to} 100%)`,
-      }}
-    >
-      <img
-        src={src ?? site.clouds.top}
-        className="absolute inset-0 h-full w-full object-cover object-center"
-        alt=""
-      />
-    </div>
+    <img
+      src={src ?? site.clouds.top}
+      className="pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 select-none"
+      alt=""
+    />
   );
 }
 
@@ -156,14 +151,6 @@ function Hero() {
   );
 }
 
-function TransitionCloud() {
-  return (
-    <div className={`relative z-20 ${site.clouds.topOverlapClass}`}>
-      <img src={site.clouds.top} className="pointer-events-none w-full" alt="" />
-    </div>
-  );
-}
-
 function Showcase() {
   const ref = useRef<HTMLDivElement>(null);
   useScrollReveal(ref);
@@ -172,13 +159,14 @@ function Showcase() {
     <section
       id="why"
       ref={ref}
-      className="relative min-h-screen w-full overflow-hidden"
+      className="relative min-h-screen w-full"
       style={{
         backgroundImage: `url(${site.showcase.backgroundUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
+      <SeamClouds />
       {/* Green wash over the maroon artwork so it sits in the brand palette. */}
       <div
         className="absolute inset-0"
@@ -215,9 +203,6 @@ function Showcase() {
   );
 }
 
-function Section({ pullUp, children }: { pullUp?: boolean; children: ReactNode }) {
-  return <div className={`relative ${pullUp ? site.clouds.sectionPullUp : ""}`}>{children}</div>;
-}
 
 function HowItWorks() {
   const ref = useRef<HTMLDivElement>(null);
@@ -227,9 +212,10 @@ function HowItWorks() {
     <section
       id="how-it-works"
       ref={ref}
-      className="relative px-4 pb-16 pt-48 sm:px-10 sm:pt-56 md:px-16 lg:px-28 lg:pb-24 lg:pt-72"
+      className={`relative px-4 pb-16 sm:px-10 md:px-16 lg:px-28 lg:pb-24 ${site.clouds.clearanceClass}`}
       style={{ backgroundColor: site.colors.deepGreen }}
     >
+      <SeamClouds />
       <div className="mx-auto max-w-5xl text-center">
         <p className="reveal font-inter text-[10px] uppercase tracking-[0.4em] text-white/60 sm:text-xs">
           {site.howItWorks.eyebrow}
@@ -319,9 +305,10 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vh]"
+      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[30vw]"
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
+      <SeamClouds src={site.clouds.bottom} />
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
         {site.quote.text} <span className="font-light italic">{site.quote.italicText}</span>
       </p>
@@ -378,29 +365,14 @@ export default function App() {
     <div className="bg-black">
       <Navbar />
       <Hero />
-
-      {/* hero → why */}
-      <TransitionCloud />
-      <div className={`relative ${site.clouds.showcaseOverlapClass}`}>
+      {/* Each section carries its own seam clouds at its top edge. */}
+      <div className="relative">
         <Showcase />
         <DoveMark className="pointer-events-none absolute -bottom-12 right-6 z-20 w-24 sm:right-10 sm:w-32 md:w-40 lg:right-16 lg:w-56 xl:w-64" />
       </div>
-
-      {/* why → how it works: artwork to green, needs hiding */}
-      <CloudDivider to={site.colors.deepGreen} />
-      <Section pullUp>
-        <HowItWorks />
-      </Section>
-
-      {/* how it works → faq: same colour, no seam to hide, so no clouds */}
+      <HowItWorks />
       <FAQ />
-
-      {/* faq → quote: green to artwork, needs hiding */}
-      <CloudDivider to={site.colors.deepGreen} src={site.clouds.bottom} />
-      <Section pullUp>
-        <QuoteBanner />
-      </Section>
-
+      <QuoteBanner />
       <Footer />
     </div>
   );
