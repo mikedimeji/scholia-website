@@ -52,7 +52,9 @@ export const site = {
   // Painted cloud band whose job is to HIDE the seam between two differently
   // coloured sections. Local fallback: "/cloud-top.png"
   clouds: {
-    top: "https://res.cloudinary.com/dsdhxhhqh/image/upload/v1781500777/cloude_vj4pjv.png",
+    top: "https://soft-zoom-63098134.figma.site/_assets/v11/b4653ee7c7405b6d07f43fffdc3cbdd84d9dfc70.png",
+    bottom: "https://soft-zoom-63098134.figma.site/_assets/v11/c536f05c69de65726fe598137058c1e477d2badc.png",
+    dove: "https://soft-zoom-63098134.figma.site/_assets/v11/779ed5f1e5b99d3fa582a54133271d32deee567e.png",
     // Each cloud divider sits BETWEEN two sections and straddles the join:
     // `dividerPullUp` lifts the cloud over the section above,
     // `sectionPullUp` lifts the next section up under the cloud.

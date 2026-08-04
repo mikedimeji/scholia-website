@@ -27,7 +27,7 @@ function Mark({ className }: { className?: string }) {
  * colour change happens behind the clouds instead of on a visible straight line.
  * `fadeTo` should be the background colour of the section below.
  */
-function CloudDivider({ to }: { to: string }) {
+function CloudDivider({ to, src }: { to: string; src?: string }) {
   // The top half MUST stay transparent: the section above shows through it.
   // Painting a colour there draws exactly the hard seam we're trying to hide.
   // The bottom fades to the next section's colour, so no page background
@@ -40,7 +40,7 @@ function CloudDivider({ to }: { to: string }) {
       }}
     >
       <img
-        src={site.clouds.top}
+        src={src ?? site.clouds.top}
         className="absolute inset-0 h-full w-full object-cover object-center"
         alt=""
       />
@@ -396,7 +396,7 @@ export default function App() {
       <FAQ />
 
       {/* faq → quote: green to artwork, needs hiding */}
-      <CloudDivider to={site.colors.deepGreen} />
+      <CloudDivider to={site.colors.deepGreen} src={site.clouds.bottom} />
       <Section pullUp>
         <QuoteBanner />
       </Section>
