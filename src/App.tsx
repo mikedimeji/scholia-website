@@ -133,7 +133,7 @@ function Hero() {
         playsInline
       />
       <div className="absolute inset-0 bg-black/20" />
-      <div className={`relative z-10 flex min-h-[140vh] w-full flex-col items-center justify-center px-4 text-center text-white ${site.clouds.clearanceBottomClass}`}>
+      <div className={`relative z-10 flex min-h-[140vh] w-full flex-col items-center justify-center px-4 pt-40 text-center text-white ${site.clouds.clearanceBottomClass}`}>
         <p
           className="hero-fade-up text-xs font-medium uppercase tracking-[0.35em] text-white/90 sm:text-sm"
           style={{ animationDelay: "0.1s" }}
