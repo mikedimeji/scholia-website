@@ -52,9 +52,13 @@ export const site = {
   // Painted cloud band whose job is to HIDE the seam between two differently
   // coloured sections. Local fallback: "/cloud-top.png"
   clouds: {
-    top: "https://soft-zoom-63098134.figma.site/_assets/v11/b4653ee7c7405b6d07f43fffdc3cbdd84d9dfc70.png",
-    bottom: "https://soft-zoom-63098134.figma.site/_assets/v11/c536f05c69de65726fe598137058c1e477d2badc.png",
-    dove: "https://soft-zoom-63098134.figma.site/_assets/v11/779ed5f1e5b99d3fa582a54133271d32deee567e.png",
+    // Local copies (2688x1520 each) — no longer hotlinking the Figma preview host.
+    // cloud-top: transparent top, dense mass at 50-70% height, fades by 85%.
+    //   Sits ON a seam; shifted up 60% so the dense part lands on the join.
+    // cloud-bottom: transparent top half, opaque to its bottom edge.
+    //   Belongs at the BOTTOM of the page, not on a seam.
+    top: "/cloud-top.png",
+    bottom: "/cloud-bottom.png",
     // Clouds are absolutely positioned at the TOP of a section and shifted up by
     // half their own rendered height (-translate-y-1/2). That centres them on the
     // seam for ANY image aspect ratio — no cropping, no guessed margins, and the
@@ -63,11 +67,13 @@ export const site = {
     //
     // The only tunable: how much top padding a section needs so its text clears
     // the lower half of the clouds. Increase if headings feel crowded.
-    // Height of the cloud band that straddles each seam. Half of it hangs into
-    // the section above, half into the section below.
-    bandHeight: "h-[34vh]",
-    // Top padding for sections whose text must clear the lower half (17vh).
-    clearanceClass: "pt-[24vh]",
+    // How far the seam cloud is lifted, as a share of its own height. 60% puts
+    // the artwork's dense band (which sits low in the image) right on the join.
+    seamShift: "-60%",
+    // The art is 1.77:1, lifted 60%, so it hangs 22.6vw below each seam.
+    // 25vw clears it at every width with a small margin. Both scale with vw, so
+    // they never drift apart the way a vh/vw mix does.
+    clearanceClass: "pt-[25vw]",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------

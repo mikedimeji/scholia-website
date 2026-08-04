@@ -49,29 +49,27 @@ function SeamClouds({
   // band's top and bottom to transparent, so the crop never shows a hard edge
   // and the sections either side blend into the clouds instead of meeting at
   // a line. Height is in vh so it stays stable regardless of image dimensions.
-  const fade =
-    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 30%, #000 62%, rgba(0,0,0,0.6) 84%, transparent 100%)";
-
-  // Where a neighbouring section is a flat colour, bleed that colour across the
-  // join *behind* the clouds. That turns the straight colour change into a soft
-  // gradient, so nothing shows through the gaps in the artwork.
+  // The artwork already fades to transparent top and bottom, so it is shown at
+  // its natural aspect — never cropped or masked. It is lifted by 60% of its own
+  // height so the dense cloud mass (which sits low in the image) lands on the
+  // join, with soft art above and below it.
+  //
+  // Where a neighbouring section is a flat colour, that colour is bled across
+  // the join behind the clouds, so the change of colour is a gradient rather
+  // than a line even where the artwork is thin.
   const blend = blendTo
-    ? `linear-gradient(to bottom, transparent 0%, transparent 30%, ${blendTo} 78%, ${blendTo} 100%)`
+    ? `linear-gradient(to bottom, transparent 0%, transparent 46%, ${blendTo} 72%, ${blendTo} 100%)`
     : blendFrom
-      ? `linear-gradient(to bottom, ${blendFrom} 0%, ${blendFrom} 22%, transparent 70%, transparent 100%)`
+      ? `linear-gradient(to bottom, ${blendFrom} 0%, ${blendFrom} 38%, transparent 66%, transparent 100%)`
       : undefined;
 
   return (
     <div
-      className={`pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 overflow-hidden ${site.clouds.bandHeight}`}
+      className="pointer-events-none absolute left-0 top-0 z-20 w-full"
+      style={{ transform: `translateY(${site.clouds.seamShift})` }}
     >
       {blend && <div className="absolute inset-0" style={{ background: blend }} />}
-      <img
-        src={src ?? site.clouds.top}
-        className="absolute inset-0 h-full w-full select-none object-cover object-center"
-        style={{ maskImage: fade, WebkitMaskImage: fade }}
-        alt=""
-      />
+      <img src={src ?? site.clouds.top} className="relative w-full select-none" alt="" />
     </div>
   );
 }
@@ -338,10 +336,17 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[34vh]"
+      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[25vw]"
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
-      <SeamClouds src={site.clouds.bottom} blendFrom={site.colors.deepGreen} />
+      <SeamClouds blendFrom={site.colors.deepGreen} />
+      {/* This artwork is opaque to its bottom edge, so it belongs flush with the
+          foot of the page where that edge is never visible. */}
+      <img
+        src={site.clouds.bottom}
+        className="pointer-events-none absolute bottom-0 left-0 z-10 w-full select-none"
+        alt=""
+      />
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
         {site.quote.text} <span className="font-light italic">{site.quote.italicText}</span>
       </p>
