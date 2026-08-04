@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Facebook, Twitter, Linkedin, BarChart3, Aperture } from "lucide-react";
 import { useScrollReveal } from "./useScrollReveal";
 import { site } from "./content";
@@ -29,11 +29,39 @@ function Mark({ className }: { className?: string }) {
  * The parent must be `relative` and must NOT be overflow-hidden.
  */
 function SeamClouds({ src, shift }: { src?: string; shift?: string }) {
+  const ref = useRef<HTMLImageElement>(null);
+  const base = shift ?? "-60%";
+
+  // Gentle parallax drift. The offset is zero when the clouds sit in the middle
+  // of the viewport, so they stay aligned to the colour change at the moment
+  // you're actually looking at them, and only drift on the way in and out.
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const el = ref.current;
+        if (el) {
+          const r = el.getBoundingClientRect();
+          const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height);
+          const drift = (progress - 0.5) * 70;
+          el.style.transform = `translateY(calc(${base} + ${drift.toFixed(1)}px))`;
+        }
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [base]);
+
   return (
     <img
+      ref={ref}
       src={src ?? site.clouds.top}
-      className="pointer-events-none absolute left-0 top-0 z-20 w-full select-none"
-      style={{ transform: `translateY(${shift ?? "-60%"})` }}
+      className="pointer-events-none absolute left-0 top-0 z-20 w-full select-none will-change-transform"
+      style={{ transform: `translateY(${base})` }}
       alt=""
     />
   );
