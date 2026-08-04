@@ -63,9 +63,11 @@ export const site = {
     //
     // The only tunable: how much top padding a section needs so its text clears
     // the lower half of the clouds. Increase if headings feel crowded.
-    // Sized so text clears the clouds even if the artwork is as tall as 2:1
-    // (half of a 2:1 image at full width = 25vw). Safe for any wider art.
-    clearanceClass: "pt-[27vw]",
+    // Height of the cloud band that straddles each seam. Half of it hangs into
+    // the section above, half into the section below.
+    bandHeight: "h-[34vh]",
+    // Top padding for sections whose text must clear the lower half (17vh).
+    clearanceClass: "pt-[24vh]",
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------

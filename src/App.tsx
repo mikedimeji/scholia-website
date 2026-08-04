@@ -33,13 +33,46 @@ function Mark({ className }: { className?: string }) {
  * on the join whatever the artwork's dimensions. The parent section must be
  * `relative` and must NOT be overflow-hidden, or the overhang gets clipped.
  */
-function SeamClouds({ src }: { src?: string }) {
+function SeamClouds({
+  src,
+  blendFrom,
+  blendTo,
+}: {
+  src?: string;
+  /** Solid colour of the section ABOVE, if it has one. */
+  blendFrom?: string;
+  /** Solid colour of the section BELOW, if it has one. */
+  blendTo?: string;
+}) {
+  // The artwork is a huge full cloudscape, so it's cropped to a band of fixed
+  // height sitting astride the seam (half above, half below). A mask fades the
+  // band's top and bottom to transparent, so the crop never shows a hard edge
+  // and the sections either side blend into the clouds instead of meeting at
+  // a line. Height is in vh so it stays stable regardless of image dimensions.
+  const fade =
+    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 30%, #000 62%, rgba(0,0,0,0.6) 84%, transparent 100%)";
+
+  // Where a neighbouring section is a flat colour, bleed that colour across the
+  // join *behind* the clouds. That turns the straight colour change into a soft
+  // gradient, so nothing shows through the gaps in the artwork.
+  const blend = blendTo
+    ? `linear-gradient(to bottom, transparent 0%, transparent 30%, ${blendTo} 78%, ${blendTo} 100%)`
+    : blendFrom
+      ? `linear-gradient(to bottom, ${blendFrom} 0%, ${blendFrom} 22%, transparent 70%, transparent 100%)`
+      : undefined;
+
   return (
-    <img
-      src={src ?? site.clouds.top}
-      className="pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 select-none"
-      alt=""
-    />
+    <div
+      className={`pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 overflow-hidden ${site.clouds.bandHeight}`}
+    >
+      {blend && <div className="absolute inset-0" style={{ background: blend }} />}
+      <img
+        src={src ?? site.clouds.top}
+        className="absolute inset-0 h-full w-full select-none object-cover object-center"
+        style={{ maskImage: fade, WebkitMaskImage: fade }}
+        alt=""
+      />
+    </div>
   );
 }
 
@@ -215,7 +248,7 @@ function HowItWorks() {
       className={`relative px-4 pb-16 sm:px-10 md:px-16 lg:px-28 lg:pb-24 ${site.clouds.clearanceClass}`}
       style={{ backgroundColor: site.colors.deepGreen }}
     >
-      <SeamClouds />
+      <SeamClouds blendTo={site.colors.deepGreen} />
       <div className="mx-auto max-w-5xl text-center">
         <p className="reveal font-inter text-[10px] uppercase tracking-[0.4em] text-white/60 sm:text-xs">
           {site.howItWorks.eyebrow}
@@ -305,10 +338,10 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[30vw]"
+      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[34vh]"
       style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
-      <SeamClouds src={site.clouds.bottom} />
+      <SeamClouds src={site.clouds.bottom} blendFrom={site.colors.deepGreen} />
       <p className="reveal-scale font-arsenica max-w-xs text-xl leading-snug text-white sm:max-w-lg sm:text-3xl md:max-w-2xl md:text-5xl lg:leading-tight">
         {site.quote.text} <span className="font-light italic">{site.quote.italicText}</span>
       </p>
