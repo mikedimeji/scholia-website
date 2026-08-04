@@ -23,64 +23,19 @@ function Mark({ className }: { className?: string }) {
 }
 
 /**
- * A cloud band that sits BETWEEN two sections and straddles the join, so the
- * colour change happens behind the clouds instead of on a visible straight line.
- * `fadeTo` should be the background colour of the section below.
+ * Clouds sitting on the seam between two sections. The artwork is shown WHOLE —
+ * never cropped, never masked — and centred on the join, so it can never show a
+ * cut edge. Sections either side carry padding to leave room for it.
+ * The parent must be `relative` and must NOT be overflow-hidden.
  */
-/**
- * Clouds that straddle the seam at the TOP of the section they're placed in.
- * `-translate-y-1/2` shifts the image up by half its own height, so it centres
- * on the join whatever the artwork's dimensions. The parent section must be
- * `relative` and must NOT be overflow-hidden, or the overhang gets clipped.
- */
-function SeamClouds({
-  src,
-  blendFrom,
-  blendTo,
-}: {
-  src?: string;
-  /** Solid colour of the section ABOVE, if it has one. */
-  blendFrom?: string;
-  /** Solid colour of the section BELOW, if it has one. */
-  blendTo?: string;
-}) {
-  // The artwork is a huge full cloudscape, so it's cropped to a band of fixed
-  // height sitting astride the seam (half above, half below). A mask fades the
-  // band's top and bottom to transparent, so the crop never shows a hard edge
-  // and the sections either side blend into the clouds instead of meeting at
-  // a line. Height is in vh so it stays stable regardless of image dimensions.
-  // The artwork already fades to transparent top and bottom, so it is shown at
-  // its natural aspect — never cropped or masked. It is lifted by 60% of its own
-  // height so the dense cloud mass (which sits low in the image) lands on the
-  // join, with soft art above and below it.
-  //
-  // Where a neighbouring section is a flat colour, that colour is bled across
-  // the join behind the clouds, so the change of colour is a gradient rather
-  // than a line even where the artwork is thin.
-  const blend = blendTo
-    ? `linear-gradient(to bottom, transparent 0%, transparent 46%, ${blendTo} 72%, ${blendTo} 100%)`
-    : blendFrom
-      ? `linear-gradient(to bottom, ${blendFrom} 0%, ${blendFrom} 38%, transparent 66%, transparent 100%)`
-      : undefined;
-
-  // The artwork is a full 16:9 cloudscape — at full width it is nearly as tall
-  // as the viewport, so it is cropped to a band (object-position 60% shows the
-  // dense cloud mass, which sits low in the image). The mask fades the crop's
-  // top and bottom so the cut never reads as an edge.
-  const fade =
-    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 10%, #000 26%, #000 68%, rgba(0,0,0,0.5) 88%, transparent 100%)";
+function SeamClouds({ src, shift }: { src?: string; shift?: string }) {
   return (
-    <div
-      className={`pointer-events-none absolute left-0 top-0 z-20 w-full -translate-y-1/2 overflow-hidden ${site.clouds.bandHeight}`}
-    >
-      {blend && <div className="absolute inset-0" style={{ background: blend }} />}
-      <img
-        src={src ?? site.clouds.top}
-        className="absolute inset-0 h-full w-full select-none object-cover"
-        style={{ objectPosition: "50% 60%", maskImage: fade, WebkitMaskImage: fade }}
-        alt=""
-      />
-    </div>
+    <img
+      src={src ?? site.clouds.top}
+      className="pointer-events-none absolute left-0 top-0 z-20 w-full select-none"
+      style={{ transform: `translateY(${shift ?? "-50%"})` }}
+      alt=""
+    />
   );
 }
 
@@ -207,13 +162,13 @@ function Showcase() {
         backgroundPosition: "center",
       }}
     >
-      <SeamClouds />
+      <SeamClouds shift="-15%" />
       {/* Green wash over the maroon artwork so it sits in the brand palette. */}
       <div
         className="absolute inset-0"
         style={{ backgroundColor: site.showcase.tintColor, opacity: site.showcase.tintOpacity }}
       />
-      <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-4 py-32 text-center text-white">
+      <div className={`relative z-10 flex min-h-screen w-full flex-col items-center justify-center px-4 text-center text-white ${site.clouds.clearanceDeepClass} ${site.clouds.clearanceBottomClass}`}>
         <h2 className="reveal font-arsenica text-4xl tracking-wide drop-shadow-[0_2px_20px_rgba(0,0,0,0.3)] sm:text-5xl md:text-7xl">
           {site.showcase.heading}
         </h2>
@@ -256,7 +211,7 @@ function HowItWorks() {
       className={`relative px-4 pb-16 sm:px-10 md:px-16 lg:px-28 lg:pb-24 ${site.clouds.clearanceClass}`}
       style={{ backgroundColor: site.colors.deepGreen }}
     >
-      <SeamClouds blendTo={site.colors.deepGreen} />
+      <SeamClouds />
       <div className="mx-auto max-w-5xl text-center">
         <p className="reveal font-inter text-[10px] uppercase tracking-[0.4em] text-white/60 sm:text-xs">
           {site.howItWorks.eyebrow}
@@ -322,8 +277,8 @@ function FAQ() {
     <section
       id="faq"
       ref={ref}
-      className="relative px-4 pt-8 sm:px-10 md:px-16 lg:px-28"
-      style={{ backgroundColor: site.colors.deepGreen, paddingBottom: site.faq.paddingBottom }}
+      className={`relative px-4 pt-8 sm:px-10 md:px-16 lg:px-28 ${site.clouds.clearanceBottomClass}`}
+      style={{ backgroundColor: site.colors.deepGreen }}
     >
       <h2 className="reveal flex items-baseline justify-center gap-1 text-center font-arsenica text-4xl text-white sm:text-5xl md:text-7xl">
         <span>Q</span>
@@ -346,10 +301,10 @@ function QuoteBanner() {
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center bg-cover bg-center px-4 text-center lg:items-start lg:justify-center lg:pt-[30vh]"
-      style={{ backgroundImage: `url(${site.quote.backgroundUrl})` }}
+      className={`relative flex w-full items-start justify-center bg-cover bg-center px-4 text-center ${site.clouds.clearanceClass}`}
+      style={{ minHeight: "max(100vh, 100vw)", backgroundImage: `url(${site.quote.backgroundUrl})` }}
     >
-      <SeamClouds blendFrom={site.colors.deepGreen} />
+      <SeamClouds />
       {/* This artwork is opaque to its bottom edge, so it belongs flush with the
           foot of the page where that edge is never visible. */}
       <img

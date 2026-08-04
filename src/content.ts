@@ -67,11 +67,14 @@ export const site = {
     //
     // The only tunable: how much top padding a section needs so its text clears
     // the lower half of the clouds. Increase if headings feel crowded.
-    // Cloud band height, straddling each seam (half above, half below). Keep it
-    // well under 50vh or the clouds swallow the viewport and cover section text.
-    bandHeight: "h-[40vh]",
-    // Text clearance: half the band (20vh) plus breathing room.
-    clearanceClass: "pt-[26vh]",
+    // The cloud art is shown WHOLE — never cropped, never masked, so it can
+    // never show a cut edge. It is centred on each seam, which means half its
+    // height (28vw, since the art is 1.77:1) hangs into the section above and
+    // half into the section below. Those sections simply get enough padding to
+    // leave room. The page is longer as a result; that is the trade.
+    clearanceClass: "pt-[32vw]", // section BELOW a seam
+    clearanceBottomClass: "pb-[32vw]", // section ABOVE a seam
+    clearanceDeepClass: "pt-[50vw]", // section under a seam whose clouds hang low
   },
 
   // --- Why Scholia (full-screen image + copy) ---------------------------------
