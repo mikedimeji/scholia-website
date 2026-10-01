@@ -66,6 +66,13 @@
   .btn.light{background:var(--paper);color:var(--ink)}
   .btn.light:hover{background:#fff}
   .btn.big{font-size:17px;padding:16px 36px}
+  /* Secondary CTA on the forest hero. Outlined rather than filled so the
+     early-access button stays the only solid thing in the group — two solid
+     buttons side by side compete and neither reads as the main action. */
+  .btn.ghost{background:transparent;color:var(--cream);
+    box-shadow:inset 0 0 0 1.5px rgba(241,240,238,.4)}
+  .btn.ghost:hover{background:rgba(241,240,238,.1);color:var(--cream);
+    box-shadow:inset 0 0 0 1.5px rgba(241,240,238,.7)}
 
   /* ── bands ───────────────────────────────────────── */
   .band{padding:96px 0;position:relative;overflow:hidden}
@@ -242,7 +249,11 @@
     <a class="link" href="#how">How it works</a>
     <a class="link" href="#spoilers">Spoilers</a>
     <a class="link" href="#faq">FAQ</a>
-    <a class="btn" href="#pricing">See pricing</a>
+    <!-- The early-access CTA is the point of the page. It goes to the Framer
+         site, which is where the list is actually captured — this page has no
+         form of its own. target/rel because it leaves for another domain. -->
+    <a class="btn" href="https://scholia.framer.website"
+       target="_blank" rel="noopener">Get early access</a>
   </div>
 </nav>
 
@@ -256,7 +267,9 @@
         the hard words, the history, who everyone is — and get an answer without
         putting it down, and without being spoiled.</p>
       <div class="cta-row">
-        <a class="btn light big" href="#pricing">See what's free</a>
+        <a class="btn light big" href="https://scholia.framer.website"
+           target="_blank" rel="noopener">Get early access</a>
+        <a class="btn ghost big" href="#pricing">See what's free</a>
         <span class="note">Free to start · iPhone</span>
       </div>
     </div>
@@ -265,7 +278,7 @@
          original illustration is what shows — never an empty box. -->
     <div class="art float" data-depth="0.035">
       <video id="heroFilm" class="hero-film" autoplay muted loop playsinline preload="metadata"
-             poster="/img/reader-cat.png"
+             poster="/img/reader-cat.webp"
              aria-label="A reader lying on a rug with a cat on her back, turning a page">
         <source src="/img/reader-cat.mp4" type="video/mp4">
       </video>
@@ -283,7 +296,7 @@
 <section class="band cream" id="why">
   <div class="wrap split reveal">
     <div class="art float" data-depth="0.03">
-      <img loading="lazy" src="/img/flying-books.png"
+      <img loading="lazy" src="/img/flying-books.webp"
            alt="Open books tumbling through the air">
     </div>
     <div>
@@ -332,7 +345,7 @@
         and start asking. The whole thing takes about three seconds.</p>
     </div>
     <div class="art float" data-depth="0.03">
-      <img loading="lazy" src="/img/scan-page.png"
+      <img loading="lazy" src="/img/scan-page.webp"
            alt="A hand holding a phone above an open book">
     </div>
   </div>
@@ -390,7 +403,7 @@
         "preview next chapter" button. It just never volunteers.</p>
     </div>
     <div class="art float" data-depth="0.03">
-      <img loading="lazy" src="/img/hand-on-page.png"
+      <img loading="lazy" src="/img/hand-on-page.webp"
            alt="A hand resting over the right-hand pages of an open book">
     </div>
   </div>
@@ -400,7 +413,7 @@
 <section class="band stone" id="features">
   <div class="wrap split reveal">
     <div class="art float" data-depth="0.03">
-      <img loading="lazy" src="/img/book-stack.png"
+      <img loading="lazy" src="/img/book-stack.webp"
            alt="A stack of books with ribbon bookmarks and reading glasses">
     </div>
     <div>
@@ -449,7 +462,7 @@
         the point.</p>
     </div>
     <div class="art float" data-depth="0.03">
-      <img loading="lazy" src="/img/armchair.png"
+      <img loading="lazy" src="/img/armchair.webp"
            alt="A reader curled up in an armchair under a lamp">
     </div>
   </div>
@@ -567,11 +580,12 @@
 <!-- ── closer ──────────────────────────────────────── -->
 <section class="band green closer" id="get">
   <div class="wrap reveal">
-    <p class="kicker">Get started</p>
+    <p class="kicker">Early access</p>
     <h2>Pick the book back up.</h2>
     <p class="lede">Reading, memory and attention are more important than ever.
       Scholia is a small nudge that keeps the pages turning.</p>
-    <a class="btn light big" href="#pricing">See what's free</a>
+    <a class="btn light big" href="https://scholia.framer.website"
+       target="_blank" rel="noopener">Get early access</a>
   </div>
 </section>
 
