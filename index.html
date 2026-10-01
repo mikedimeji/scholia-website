@@ -1,18 +1,706 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/s-mark.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Scholia — a showcase honoring the readers, thinkers and makers who bring paper books back to life with AI." />
-    <title>Scholia — The Digital Archive</title>
-    <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/cbb3cb559d2e4387e139cfb1656e31f5?family=Arsenica+Trial+Light" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scholia — the reading companion for paper books</title>
+<meta name="description" content="Photograph the page you're on. Scholia explains anything in the book — the hard words, the history, the argument — without spoiling what's ahead.">
+
+<meta property="og:title" content="Scholia — the reading companion for paper books">
+<meta property="og:description" content="Photograph the page you're on. Ask the book anything. Nothing past your page, ever.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://scholia.cloud/">
+<meta name="theme-color" content="#2E5D45">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://covers.openlibrary.org">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Archivo+Narrow:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#F1EDE4;
+    --ink:#1D1A15;
+    --forest:#2E5D45;
+    --forest-deep:#24493A;
+    --mustard:#E2A93C;
+    --panel:#FFFFFF;
+    --cream:#F1F0EE;
+    --stone:#E7E0D1;
+    --ink-60:rgba(29,26,21,.62);
+    --hair:rgba(29,26,21,.13);
+    --display:"Playfair Display",Didot,"Bodoni 72",Georgia,serif;
+    --label:"Archivo Narrow","Helvetica Neue",Arial,sans-serif;
+    --body:"Nunito",ui-rounded,"SF Pro Rounded",-apple-system,"Segoe UI",sans-serif;
+    --r:28px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{width:min(1120px,100% - 48px);margin-inline:auto}
+
+  /* ── nav ─────────────────────────────────────────── */
+  nav{position:sticky;top:0;z-index:60;background:rgba(241,237,228,.84);
+    backdrop-filter:blur(14px);border-bottom:1px solid transparent;
+    transition:border-color .25s, box-shadow .25s}
+  nav.stuck{border-bottom-color:var(--hair);box-shadow:0 6px 24px rgba(29,26,21,.06)}
+  nav .wrap{display:flex;align-items:center;gap:30px;height:66px}
+  .mark{font-family:var(--display);font-weight:700;font-size:25px;
+    letter-spacing:-.01em;text-decoration:none;margin-right:auto}
+  nav a.link{font-size:14.5px;font-weight:600;text-decoration:none;
+    color:var(--ink-60);transition:color .15s}
+  nav a.link:hover{color:var(--forest)}
+  @media(max-width:820px){nav a.link{display:none}}
+
+  .btn{display:inline-block;background:var(--forest);color:var(--cream);
+    font-family:var(--body);font-weight:700;font-size:15.5px;text-decoration:none;
+    padding:13px 28px;border-radius:999px;border:none;cursor:pointer;
+    transition:transform .14s cubic-bezier(.2,.8,.2,1), background .18s, box-shadow .18s;
+    white-space:nowrap}
+  .btn:hover{background:var(--forest-deep);transform:translateY(-2px);
+    box-shadow:0 10px 24px rgba(29,26,21,.16)}
+  .btn.light{background:var(--paper);color:var(--ink)}
+  .btn.light:hover{background:#fff}
+  .btn.big{font-size:17px;padding:16px 36px}
+
+  /* ── bands ───────────────────────────────────────── */
+  .band{padding:96px 0;position:relative;overflow:hidden}
+  .band.green{background:var(--forest);color:var(--cream)}
+  .band.green .kicker{color:var(--mustard)}
+  .band.cream{background:var(--paper)}
+  .band.stone{background:var(--stone)}
+
+  .kicker{font-family:var(--label);font-weight:700;font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--forest);margin:0 0 14px}
+  h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.015em;
+    line-height:1.08;margin:0}
+  h1{font-size:clamp(46px,6.4vw,82px)}
+  h2{font-size:clamp(34px,4.4vw,54px)}
+  h3{font-size:22px;line-height:1.2}
+  .lede{font-size:clamp(17px,2vw,20px);line-height:1.55;color:var(--ink-60);
+    max-width:46ch;margin:20px 0 0}
+  .band.green .lede{color:rgba(241,240,238,.78)}
+
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  @media(max-width:880px){.split{grid-template-columns:1fr;gap:34px}
+    .split .art{order:-1}}
+
+  .art{border-radius:var(--r);overflow:hidden;background:var(--paper);
+    max-width:520px;margin-inline:auto;width:100%;
+    box-shadow:0 18px 44px rgba(29,26,21,.10)}
+  .art img, .art video{width:100%;display:block}
+  /* Cross-fade the film in over its own poster, so the swap from still to
+     moving isn't a visible pop. */
+  .hero-film{opacity:0;transition:opacity .9s ease}
+  .hero-film.ready{opacity:1}
+  .art.has-film{position:relative}
+  .art.has-film .still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  @media(max-width:880px){
+    .art{max-width:400px}
+    .art img{height:clamp(230px,48vw,330px);object-fit:cover}
+  }
+
+  /* ── drifting cover shelf ────────────────────────── */
+  .shelf{padding:0 0 10px;--speed:64s}
+  .shelf .rail{display:flex;width:max-content;gap:18px;padding:34px 0 40px;
+    animation:drift var(--speed) linear infinite;will-change:transform}
+  .shelf:hover .rail{animation-play-state:paused}
+  @keyframes drift{from{transform:translate3d(0,0,0)}
+                   to{transform:translate3d(-50%,0,0)}}
+  .shelf .cov{flex:0 0 auto;width:124px;border-radius:8px;overflow:hidden;
+    box-shadow:0 10px 26px rgba(29,26,21,.22);background:rgba(241,240,238,.1);
+    transform:rotate(var(--tilt,0deg));transition:transform .3s}
+  .shelf .cov:hover{transform:rotate(0) translateY(-8px) scale(1.04)}
+  .shelf .cov img{width:100%;aspect-ratio:2/3;object-fit:cover}
+  /* Varying widths so the row reads as a real shelf rather than a filmstrip. */
+  .shelf .cov:nth-child(3n){width:146px}
+  .shelf .cov:nth-child(5n){width:112px}
+  .fade-edges{position:relative}
+  .fade-edges::before,.fade-edges::after{content:"";position:absolute;top:0;bottom:0;
+    width:90px;z-index:2;pointer-events:none}
+  .fade-edges::before{left:0;background:linear-gradient(90deg,var(--forest),transparent)}
+  .fade-edges::after{right:0;background:linear-gradient(270deg,var(--forest),transparent)}
+
+  /* ── steps & cards ───────────────────────────────── */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));
+    gap:20px;margin-top:46px}
+  .step{background:var(--panel);border-radius:24px;padding:28px 26px 30px;
+    border:1px solid var(--hair);transition:transform .3s cubic-bezier(.2,.8,.2,1),
+    box-shadow .3s}
+  .step:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(29,26,21,.12)}
+  .step .n{font-family:var(--display);font-size:40px;line-height:1;
+    color:var(--forest);opacity:.32;margin-bottom:12px}
+  .step h3{font-size:19px;margin-bottom:8px}
+  .step p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-60)}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;margin-top:44px}
+  .card{background:var(--panel);border-radius:24px;padding:26px;
+    border:1px solid var(--hair);transition:transform .3s cubic-bezier(.2,.8,.2,1),
+    box-shadow .3s}
+  .card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(29,26,21,.12)}
+  .card h3{font-size:18px;margin-bottom:7px}
+  .card p{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-60)}
+  .band.green .card{background:rgba(241,240,238,.08);border-color:rgba(241,240,238,.16)}
+  .band.green .card h3{color:var(--cream)}
+  .band.green .card p{color:rgba(241,240,238,.74)}
+
+  /* ── chat proof ──────────────────────────────────── */
+  .chat{max-width:520px;margin-top:30px}
+  .bub{border-radius:22px;padding:15px 20px;margin:0 0 12px;font-size:15.5px;
+    line-height:1.5;max-width:88%;
+    opacity:0;transform:translateY(14px) scale(.97);
+    transition:opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
+  .chat.in .bub{opacity:1;transform:none}
+  .chat.in .bub:nth-child(1){transition-delay:.05s}
+  .chat.in .bub:nth-child(2){transition-delay:.45s}
+  .chat.in .bub:nth-child(3){transition-delay:.95s}
+  .chat.in .bub:nth-child(4){transition-delay:1.35s}
+  .bub.you{background:var(--forest);color:var(--cream);margin-left:auto;
+    border-bottom-right-radius:8px}
+  .bub.it{background:var(--panel);color:var(--ink);border:1px solid var(--hair);
+    border-bottom-left-radius:8px}
+
+  /* ── faq ─────────────────────────────────────────── */
+  .faq{margin-top:40px;max-width:800px}
+  details{border-bottom:1px solid var(--hair);padding:4px 0}
+  summary{cursor:pointer;list-style:none;padding:20px 40px 20px 0;position:relative;
+    font-weight:700;font-size:17.5px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";position:absolute;right:6px;top:15px;font-size:26px;
+    font-weight:400;color:var(--forest);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{margin:0 0 20px;color:var(--ink-60);font-size:16px;max-width:66ch}
+
+  /* ── pricing ─────────────────────────────────────── */
+  .plans{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px;max-width:780px}
+  @media(max-width:700px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--panel);border:1px solid var(--hair);border-radius:24px;padding:28px}
+  .plan.hi{border:2px solid var(--forest)}
+  .plan h3{margin-bottom:4px}
+  .plan .tag{font-family:var(--label);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--forest);font-weight:700}
+  .plan ul{margin:16px 0 0;padding-left:20px}
+  .plan li{font-size:15px;color:var(--ink-60);margin-bottom:6px}
+
+  .closer{text-align:center;padding:112px 0}
+  .closer h2{max-width:16ch;margin-inline:auto}
+  .closer .lede{margin-inline:auto;text-align:center}
+  .closer .btn{margin-top:34px}
+
+  footer{background:var(--forest);color:rgba(241,240,238,.72);padding:54px 0 44px;font-size:14.5px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:20px 34px;align-items:center}
+  footer .mark{color:var(--cream);font-size:22px;margin-right:auto}
+  footer a{color:rgba(241,240,238,.72);text-decoration:none}
+  footer a:hover{color:var(--cream)}
+  .fine{width:100%;color:rgba(241,240,238,.45);font-size:13px;margin-top:10px}
+
+  .blob{position:absolute;border-radius:50%;background:rgba(241,240,238,.05);
+    pointer-events:none}
+  header.hero{background:var(--forest);color:var(--cream);padding:84px 0 0;
+    position:relative;overflow:hidden}
+  header.hero h1{color:var(--cream)}
+  header.hero .kicker{color:var(--mustard)}
+  header.hero .lede{color:rgba(241,240,238,.8)}
+  .hero .cta-row{display:flex;gap:14px;align-items:center;margin-top:34px;flex-wrap:wrap}
+  .hero .note{font-size:14px;color:rgba(241,240,238,.62)}
+  .blob.a{width:620px;height:620px;right:-180px;top:-240px}
+  .blob.b{width:380px;height:380px;left:-170px;bottom:60px}
+  .hero .art{box-shadow:0 34px 80px rgba(0,0,0,.28)}
+
+  /* ── scroll reveal ───────────────────────────────── */
+  .reveal{opacity:0;transform:translateY(26px);
+    transition:opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .stagger > *{opacity:0;transform:translateY(22px);
+    transition:opacity .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1)}
+  .stagger.in > *{opacity:1;transform:none}
+  .stagger.in > *:nth-child(1){transition-delay:.00s}
+  .stagger.in > *:nth-child(2){transition-delay:.09s}
+  .stagger.in > *:nth-child(3){transition-delay:.18s}
+  .stagger.in > *:nth-child(4){transition-delay:.27s}
+  .float{transition:transform .1s linear}
+
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal,.stagger > *,.bub{opacity:1 !important;transform:none !important;transition:none}
+    .shelf .rail{animation:none}
+    .float{transform:none !important}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="mark" href="#top">Scholia</a>
+    <a class="link" href="#why">Why Scholia</a>
+    <a class="link" href="#how">How it works</a>
+    <a class="link" href="#spoilers">Spoilers</a>
+    <a class="link" href="#faq">FAQ</a>
+    <a class="btn" href="#pricing">See pricing</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="blob a"></div><div class="blob b"></div>
+  <div class="wrap split">
+    <div>
+      <p class="kicker">For paper books</p>
+      <h1>The reading companion for real books.</h1>
+      <p class="lede">Photograph the page you're on. Ask the book anything —
+        the hard words, the history, who everyone is — and get an answer without
+        putting it down, and without being spoiled.</p>
+      <div class="cta-row">
+        <a class="btn light big" href="#pricing">See what's free</a>
+        <span class="note">Free to start · iPhone</span>
+      </div>
+    </div>
+    <!-- The drawing, animated. The still is the poster, so if the video is
+         blocked, still loading, or the visitor has asked for less motion, the
+         original illustration is what shows — never an empty box. -->
+    <div class="art float" data-depth="0.035">
+      <video id="heroFilm" class="hero-film" autoplay muted loop playsinline preload="metadata"
+             poster="/img/reader-cat.png"
+             aria-label="A reader lying on a rug with a cat on her back, turning a page">
+        <source src="/img/reader-cat.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <!-- A shelf that never stops moving. Two identical halves, translated -50%,
+       so the loop is seamless rather than snapping back. -->
+  <div class="shelf fade-edges">
+    <div class="rail" id="rail"></div>
+  </div>
+</header>
+
+<!-- ── the problem ─────────────────────────────────── -->
+<section class="band cream" id="why">
+  <div class="wrap split reveal">
+    <div class="art float" data-depth="0.03">
+      <img loading="lazy" src="/img/flying-books.png"
+           alt="Open books tumbling through the air">
+    </div>
+    <div>
+      <p class="kicker">Why Scholia</p>
+      <h2>Answered without putting the book down.</h2>
+      <p class="lede">A single unfamiliar word can cost you a chapter. You set
+        the book down, find your phone, and work through a dictionary, a search,
+        and three half-read articles — none of which know which book you're
+        holding, and one of which casually tells you how it ends. By the time
+        you've found your place again, the thread has gone.</p>
+      <p class="lede">Scholia closes that gap entirely. Photograph the page
+        you're on, ask, and carry on — it knows the book, it knows how far
+        you've read, and it stops exactly there.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="margin-top:64px">
+    <div class="cards stagger">
+      <div class="card">
+        <h3>Philosophy &amp; argument</h3>
+        <p>What is this claim, where does it come from, and is the author serious about it?</p>
+      </div>
+      <div class="card">
+        <h3>History &amp; context</h3>
+        <p>Who this person was, what was happening at the time, and why the detail matters.</p>
+      </div>
+      <div class="card">
+        <h3>Language &amp; translation</h3>
+        <p>What a word means <em>here</em>, what the pun was in the original, why this reads oddly.</p>
+      </div>
+      <div class="card">
+        <h3>Who everyone is</h3>
+        <p>The name you've forgotten, and how they know the person on this page.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── how it works ────────────────────────────────── -->
+<section class="band green" id="how">
+  <div class="wrap split reveal">
+    <div>
+      <p class="kicker">Four steps</p>
+      <h2>No page numbers. No ebook. No account to set up.</h2>
+      <p class="lede">Open the app, point the camera at whatever page you're on,
+        and start asking. The whole thing takes about three seconds.</p>
+    </div>
+    <div class="art float" data-depth="0.03">
+      <img loading="lazy" src="/img/scan-page.png"
+           alt="A hand holding a phone above an open book">
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="steps stagger">
+      <div class="step">
+        <div class="n">01</div>
+        <h3>Add your book</h3>
+        <p>Search the title, or scan the barcode on the back cover. It appears on
+           your shelf with its real cover art.</p>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <h3>Photograph your page</h3>
+        <p>The words are read on your device and never uploaded. Any edition, any
+           printing, any translation — it reads the page, not a page number.</p>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <h3>Confirm where you are</h3>
+        <p>Scholia works out your chapter and tells you how confident it is. If
+           it isn't sure, it says so instead of guessing.</p>
+      </div>
+      <div class="step">
+        <div class="n">04</div>
+        <h3>Ask anything</h3>
+        <p>Answers in plain language, in seconds, anchored to the page in front
+           of you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── spoilers ────────────────────────────────────── -->
+<section class="band cream" id="spoilers">
+  <div class="wrap split reveal">
+    <div>
+      <p class="kicker">No spoilers. Ever.</p>
+      <h2>It answers everything except the ending.</h2>
+      <p class="lede">This is the part a general chatbot can't do. Search a
+        character's name and the first result tells you how they die. Scholia
+        knows the page you're on, so it can answer in full — and stop exactly
+        there.</p>
+      <div class="chat" id="chat">
+        <div class="bub you">Why does Raskolnikov keep going back to the scene?</div>
+        <div class="bub it">Because he can't leave it alone — and that's the
+          point Dostoevsky is making about him. Up to where you are, he's built a
+          theory to justify what he did, and his body keeps disagreeing with it.</div>
+        <div class="bub you">Does he get caught?</div>
+        <div class="bub it">That comes later in the book — I'll keep it unspoiled.</div>
+      </div>
+      <p class="lede" style="font-size:16px">Protection is on by default and set
+        per book. When you <em>do</em> want to look ahead, ask for it — there's a
+        "preview next chapter" button. It just never volunteers.</p>
+    </div>
+    <div class="art float" data-depth="0.03">
+      <img loading="lazy" src="/img/hand-on-page.png"
+           alt="A hand resting over the right-hand pages of an open book">
+    </div>
+  </div>
+</section>
+
+<!-- ── features ────────────────────────────────────── -->
+<section class="band stone" id="features">
+  <div class="wrap split reveal">
+    <div class="art float" data-depth="0.03">
+      <img loading="lazy" src="/img/book-stack.png"
+           alt="A stack of books with ribbon bookmarks and reading glasses">
+    </div>
+    <div>
+      <p class="kicker">Your reading life</p>
+      <h2>Everything you're in the middle of, in one place.</h2>
+      <p class="lede">Every book bookmarked at its own chapter, independently. A
+        calendar of the days you read and the streak you're on. Books finished
+        this year against a goal you set, star ratings, and an honest breakdown
+        of what you actually read.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="margin-top:62px">
+    <div class="cards stagger">
+      <div class="card">
+        <h3>Barcode scanning</h3>
+        <p>Point the camera at the back cover. The book is on your shelf in a second.</p>
+      </div>
+      <div class="card">
+        <h3>Read on your device</h3>
+        <p>Page text is recognised on the phone itself. The photograph is never stored or uploaded.</p>
+      </div>
+      <div class="card">
+        <h3>Reading record</h3>
+        <p>Streaks, a month calendar, finished books, ratings and genre mix.</p>
+      </div>
+      <div class="card">
+        <h3>Made to look at</h3>
+        <p>Light and dark, seven accent colours, and a hand-drawn mode with ink borders and paper grain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── classics ────────────────────────────────────── -->
+<section class="band green">
+  <div class="wrap split reveal">
+    <div>
+      <p class="kicker">Classics, decoded</p>
+      <h2>Read Dostoevsky without a second degree.</h2>
+      <p class="lede">The patronymics. The Napoleonic reference. The Latin
+        epigraph. The theology the whole argument rests on. All of it explained
+        where you are, at the level you ask for — including "explain this page
+        like I'm twelve", which is a real button and the most used one we have.</p>
+      <p class="lede">You don't have to pretend you understood it. That's rather
+        the point.</p>
+    </div>
+    <div class="art float" data-depth="0.03">
+      <img loading="lazy" src="/img/armchair.png"
+           alt="A reader curled up in an armchair under a lamp">
+    </div>
+  </div>
+</section>
+
+<!-- ── pricing ─────────────────────────────────────── -->
+<section class="band cream" id="pricing">
+  <div class="wrap reveal">
+    <p class="kicker">Plans</p>
+    <h2>Try it on a real book. Then decide.</h2>
+    <p class="lede">You get a batch of free questions when you download the app.
+      No card, no trial countdown, no "free for 7 days" that quietly bills you on
+      day eight. Use them tonight or spread them over a month — they're yours
+      until they're gone.</p>
+
+    <div class="plans stagger">
+      <div class="plan">
+        <span class="tag">Free · no card</span>
+        <h3>Your first questions</h3>
+        <ul>
+          <li><strong>Enough to get through a proper reading session</strong> and
+            know whether this is for you</li>
+          <li>No clock on them — nothing expires at midnight</li>
+          <li>Every feature unlocked: scanning, spoiler protection, your whole shelf</li>
+          <li>Everything you asked stays readable forever, even if you never pay</li>
+        </ul>
+      </div>
+      <div class="plan hi">
+        <span class="tag">Premium</span>
+        <h3>When you don't want to count</h3>
+        <ul>
+          <li><strong>Ask as much as you like</strong>, for as long as the book takes</li>
+          <li>Monthly or yearly — yearly works out a good deal cheaper</li>
+          <li>Cancel in two taps from Settings, keep everything you've asked</li>
+          <li>Costs about what you'd pay for one secondhand paperback a month</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:26px;font-size:16px">Most people hit
+      Premium in the middle of a book they're enjoying, which is exactly when
+      they should — not before they've seen it work.</p>
+  </div>
+</section>
+
+<!-- ── faq ─────────────────────────────────────────── -->
+<section class="band stone" id="faq">
+  <div class="wrap reveal">
+    <p class="kicker">Q &amp; A</p>
+    <h2>The questions we actually get.</h2>
+
+    <div class="faq">
+      <details open>
+        <summary>What is Scholia, exactly?</summary>
+        <p>A reading companion for physical books. Photograph the page you're on
+          and ask whatever you like — what a passage means, who a character is,
+          what you should remember before the next chapter. Scholia knows the
+          book, and it knows how far you've read.</p>
+      </details>
+      <details>
+        <summary>Does it work across different editions?</summary>
+        <p>Yes, and it's the part we're proudest of. Scholia never relies on page
+          numbers, because your paperback and someone else's hardback don't agree
+          on them. It reads the actual words on your page and matches them to the
+          book, so any printing or translation works.</p>
+      </details>
+      <details>
+        <summary>Is it really spoiler-free?</summary>
+        <p>Answers are anchored to the page in front of you and to the chapter
+          you've reached. Spoiler protection is deliberate and strict: nothing
+          beyond your position is discussed. It's careful rather than infallible,
+          so we say that plainly — and you can switch it off per book whenever
+          you want the whole thing on the table.</p>
+      </details>
+      <details>
+        <summary>Which books are supported?</summary>
+        <p>Search a title and Scholia tells you honestly how well it knows that
+          specific book. Popular fiction, classics and well-known non-fiction are
+          covered in real depth. For rarer titles it leans on the page you've
+          photographed and says it's doing so, rather than inventing something.</p>
+      </details>
+      <details>
+        <summary>What happens to the photos of my pages?</summary>
+        <p>The text is recognised on your phone, by the phone. The photograph
+          itself is never stored on our servers and never uploaded. What travels
+          is the text of the page, and only to work out where you are and answer
+          your question.</p>
+      </details>
+      <details>
+        <summary>How long does an answer take?</summary>
+        <p>Seconds. Photograph the page, confirm where you are, and the answer
+          arrives before you've settled back into the chair.</p>
+      </details>
+      <details>
+        <summary>What do I actually get for free?</summary>
+        <p>A batch of questions when you install the app — no card, no trial
+          clock. Every feature is unlocked from the first one: scanning, spoiler
+          protection, your whole shelf and reading record. They're enough to use
+          Scholia properly on a real book and decide for yourself, rather than
+          enough to look at a demo. When they run out, Premium is unlimited,
+          monthly or yearly. Everything you asked before that stays readable
+          forever, whether you pay or not.</p>
+      </details>
+      <details>
+        <summary>What's coming next?</summary>
+        <p>Chapter recaps for when you've been away from a book, importing the
+          shelf you already track elsewhere, and a way to look back over
+          everything a book taught you. The core promise doesn't change: your
+          book, your page, no spoilers.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ── closer ──────────────────────────────────────── -->
+<section class="band green closer" id="get">
+  <div class="wrap reveal">
+    <p class="kicker">Get started</p>
+    <h2>Pick the book back up.</h2>
+    <p class="lede">Reading, memory and attention are more important than ever.
+      Scholia is a small nudge that keeps the pages turning.</p>
+    <a class="btn light big" href="#pricing">See what's free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mark">Scholia</span>
+    <!-- Only Privacy is linked: a real page exists for it and ships alongside
+         this one. /terms and /support had no pages behind them — the old site
+         answered every path with its SPA shell, so they looked fine and were
+         dead. Add the links back when the pages exist. -->
+    <a href="/privacy">Privacy</a>
+    <p class="fine">© <span id="y">2026</span> Scholia. All rights reserved.
+      Book covers from Open Library.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── the drifting shelf ─────────────────────────────────────────────
+     Covers come from Open Library by ISBN. Each is duplicated once so the
+     rail can translate exactly -50% and loop with no visible seam — the
+     same trick Fable's slider achieves with JS, done in CSS so it costs
+     nothing and never stutters. A cover that fails to load removes itself
+     rather than leaving a grey gap. */
+  var ISBNS = [
+    '9780140449136', // Crime and Punishment
+    '9780141439518', // Pride and Prejudice
+    '9780142437247', // Moby-Dick
+    '9780141441146', // Jane Eyre
+    '9780141439471', // Frankenstein
+    '9780141439556', // Wuthering Heights
+    '9780140449242', // The Brothers Karamazov
+    '9780141439600', // Great Expectations
+    '9780141439549', // Middlemarch
+    '9780143035008', // Anna Karenina
+    '9780141439846', // Dracula
+    '9780141439570', // The Picture of Dorian Gray
+    '9780142004234', // East of Eden
+    '9780060935467'  // To Kill a Mockingbird
+  ];
+  var rail = document.getElementById('rail');
+  if (rail) {
+    var tilts = [-2, 1.4, -1, 2.2, -1.6, .8];
+    function build(copy) {
+      ISBNS.forEach(function (isbn, i) {
+        var d = document.createElement('div');
+        d.className = 'cov';
+        d.style.setProperty('--tilt', tilts[i % tilts.length] + 'deg');
+        var img = document.createElement('img');
+        img.loading = copy === 0 ? 'eager' : 'lazy';
+        img.alt = '';
+        img.setAttribute('aria-hidden', 'true');
+        img.src = 'https://covers.openlibrary.org/b/isbn/' + isbn + '-M.jpg';
+        // Open Library answers 200 with a 1x1 pixel for covers it doesn't
+        // have, so a load handler has to check the size, not just fire.
+        img.onload = function () { if (img.naturalWidth < 20) d.remove(); };
+        img.onerror = function () { d.remove(); };
+        d.appendChild(img);
+        rail.appendChild(d);
+      });
+    }
+    build(0); build(1);
+  }
+
+  /* ── the hero film ──────────────────────────────────────────────────
+     Shown only once it can actually play. Paused while off screen so it
+     isn't decoding frames nobody is looking at, and skipped entirely for
+     anyone who has asked for reduced motion — the poster stands in. */
+  var film = document.getElementById('heroFilm');
+  if (film) {
+    if (reduce) {
+      film.removeAttribute('autoplay');
+      film.pause();
+    } else {
+      film.addEventListener('canplay', function () { film.classList.add('ready'); });
+      film.addEventListener('error', function () { film.classList.remove('ready'); });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) { film.play().catch(function () {}); }
+            else { film.pause(); }
+          });
+        }, { threshold: 0.05 }).observe(film);
+      }
+    }
+  }
+
+  /* ── reveal on scroll ───────────────────────────────────────────── */
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    document.querySelectorAll('.reveal, .stagger, .chat').forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal, .stagger, .chat').forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* ── nav shadow + illustration parallax ─────────────────────────── */
+  var nav = document.getElementById('nav');
+  var floats = [].slice.call(document.querySelectorAll('.float'));
+  var ticking = false;
+
+  function frame() {
+    ticking = false;
+    var y = window.scrollY || 0;
+    nav.classList.toggle('stuck', y > 12);
+    if (reduce) return;
+    var vh = window.innerHeight;
+    for (var i = 0; i < floats.length; i++) {
+      var el = floats[i];
+      var r = el.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) continue;   // off screen, skip
+      // How far through the viewport this element is, -1 … 1
+      var p = (r.top + r.height / 2 - vh / 2) / (vh / 2);
+      el.style.transform = 'translate3d(0,' + (p * (parseFloat(el.dataset.depth) || 0) * -140).toFixed(2) + 'px,0)';
+    }
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  frame();
+})();
+</script>
+</body>
 </html>
