@@ -18,19 +18,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
-      - name: Install dependencies
-        run: npm ci
-
+      # No `npm ci`. The build is a file copy — see package.json — so there is
+      # nothing to install, and installing React and Vite to copy two files just
+      # adds thirty seconds and a way to fail.
       - name: Build
         run: npm run build
 
+      # Was cloudflare/pages-action@v1, which Cloudflare has since deleted
+      # outright — the job then failed at "Set up job" with "Unable to resolve
+      # action", before running a single step. wrangler-action is the supported
+      # replacement and is actively maintained.
+      #
+      # --branch=main matters: without it wrangler cannot always work out the
+      # branch in CI, and a deploy that is not on the production branch goes out
+      # as a preview, so scholia.cloud would not change and nothing would say so.
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: scholia-site
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy dist --project-name=scholia-site --branch=main
