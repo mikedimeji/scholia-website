@@ -199,6 +199,32 @@
   .closer .lede{margin-inline:auto;text-align:center}
   .closer .btn{margin-top:34px}
 
+  /* ── early access form ───────────────────────────────── */
+  .signup{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+    margin:34px auto 0;max-width:470px}
+  .signup input[type=email]{flex:1 1 230px;min-width:0;height:54px;
+    padding:0 20px;font-family:var(--body);font-size:16px;color:var(--ink);
+    background:var(--paper);border:none;border-radius:999px;outline:none;
+    transition:box-shadow .15s}
+  .signup input[type=email]::placeholder{color:var(--ink-60)}
+  .signup input[type=email]:focus{box-shadow:0 0 0 3px rgba(241,240,238,.45)}
+  .signup button{height:54px;padding:0 30px;border:none;border-radius:999px;
+    background:var(--mustard);color:var(--ink);cursor:pointer;
+    font-family:var(--body);font-weight:700;font-size:16px;white-space:nowrap;
+    transition:transform .14s cubic-bezier(.2,.8,.2,1), filter .18s}
+  .signup button:hover{filter:brightness(1.06);transform:translateY(-2px)}
+  .signup button:disabled{opacity:.6;cursor:default;transform:none}
+  /* Off-screen rather than display:none, so the honeypot still gets filled
+     by bots that skip hidden fields. */
+  .trap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .signup-note{font-size:14px;color:rgba(241,240,238,.62);margin:14px 0 0}
+  .signup-note.bad{color:#F0997B}
+  @media(max-width:520px){
+    .signup{flex-direction:column}
+    .signup button{width:100%}
+  }
+
   footer{background:var(--forest);color:rgba(241,240,238,.72);padding:54px 0 44px;font-size:14.5px}
   footer .wrap{display:flex;flex-wrap:wrap;gap:20px 34px;align-items:center}
   footer .mark{color:var(--cream);font-size:22px;margin-right:auto}
@@ -252,8 +278,7 @@
     <!-- The early-access CTA is the point of the page. It goes to the Framer
          site, which is where the list is actually captured — this page has no
          form of its own. target/rel because it leaves for another domain. -->
-    <a class="btn" href="https://scholia.framer.website"
-       target="_blank" rel="noopener">Get early access</a>
+    <a class="btn" href="#get">Get early access</a>
   </div>
 </nav>
 
@@ -267,8 +292,7 @@
         the hard words, the history, who everyone is — and get an answer without
         putting it down, and without being spoiled.</p>
       <div class="cta-row">
-        <a class="btn light big" href="https://scholia.framer.website"
-           target="_blank" rel="noopener">Get early access</a>
+        <a class="btn light big" href="#get">Get early access</a>
         <a class="btn ghost big" href="#pricing">See what's free</a>
         <span class="note">Free to start · iPhone</span>
       </div>
@@ -584,19 +608,31 @@
     <h2>Pick the book back up.</h2>
     <p class="lede">Reading, memory and attention are more important than ever.
       Scholia is a small nudge that keeps the pages turning.</p>
-    <a class="btn light big" href="https://scholia.framer.website"
-       target="_blank" rel="noopener">Get early access</a>
+      <!-- The form lives HERE, on this page. It used to be a button to a
+           second site whose email field sat 5,565px down: 28,000 ad clicks
+           produced two subscribers, because signing up meant leaving the
+           domain and then scrolling 72% of a page you don't control.
+           One field, one button, no hop. -->
+      <form class="signup" id="signup" novalidate>
+        <label class="sr-only" for="email">Email address</label>
+        <input id="email" name="email" type="email" required
+               placeholder="you@example.com" autocomplete="email"
+               spellcheck="false">
+        <!-- Bots fill every field they find; people never see this one. -->
+        <input class="trap" type="text" name="company" tabindex="-1"
+               autocomplete="off" aria-hidden="true">
+        <button type="submit">Get early access</button>
+      </form>
+      <p class="signup-note" id="signupNote">No spam. One email when it&rsquo;s ready.</p>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
     <span class="mark">Scholia</span>
-    <!-- Only Privacy is linked: a real page exists for it and ships alongside
-         this one. /terms and /support had no pages behind them — the old site
-         answered every path with its SPA shell, so they looked fine and were
-         dead. Add the links back when the pages exist. -->
     <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/support">Support</a>
     <p class="fine">© <span id="y">2026</span> Scholia. All rights reserved.
       Book covers from Open Library.</p>
   </div>
@@ -676,6 +712,84 @@
         }, { threshold: 0.05 }).observe(film);
       }
     }
+  }
+
+  /* ── early access form ──────────────────────────────────────────────
+     Posts straight to Loops' public form endpoint. No backend of our own,
+     so there is nothing to deploy, nothing to keep running, and subscribers
+     land in the same list the existing ones are already in.
+
+     Get FORM_ID from Loops: Forms -> your form -> the endpoint it shows is
+     https://app.loops.so/api/newsletter-form/XXXXXXXX — paste that id below.
+     Until it is set the form says so rather than silently failing, which is
+     how you end up running ads into a dead signup for a week. */
+  var LOOPS_FORM_ID = "cms4q34hv1xcb0jx17ggamung";
+
+  var signup = document.getElementById('signup');
+  var note = document.getElementById('signupNote');
+  var button;
+
+  if (signup) signup.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var email = signup.email.value.trim();
+    button = signup.querySelector('button');
+
+    // The browser's own check is enough here; a stricter regex rejects valid
+    // addresses and the cost of a bad one is a bounce, not a breach.
+    if (!email || !signup.email.checkValidity()) {
+      note.textContent = 'That email address does not look right.';
+      note.className = 'signup-note bad';
+      return;
+    }
+    // Honeypot filled means a bot. Say "thanks" and send nothing.
+    if (signup.company.value) { done(); return; }
+
+    if (LOOPS_FORM_ID.indexOf('REPLACE') > -1) {
+      note.textContent = 'Signup is not connected yet — email hello@scholia.cloud.';
+      note.className = 'signup-note bad';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    try {
+      var res = await fetch('https://app.loops.so/api/newsletter-form/' + LOOPS_FORM_ID, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'email=' + encodeURIComponent(email)
+            + '&userGroup=' + encodeURIComponent('Website signups')
+            + '&source=' + encodeURIComponent('scholia.cloud'),
+      });
+
+      // Loops rate-limits per IP and answers 429. Saying "you're on the list"
+      // to someone who isn't is the worst possible outcome here.
+      if (res.status === 429) {
+        return fail('Too many signups just now — try again in a minute.');
+      }
+
+      // It answers 200 with { success: false } for things like a malformed
+      // address, so the status code alone is not enough to trust.
+      var data = await res.json().catch(function () { return { success: res.ok }; });
+      if (data && data.success) { done(); }
+      else { fail(data && data.message ? data.message : 'That did not send.'); }
+
+    } catch (err) {
+      fail('That did not send. Try again, or email hello@scholia.cloud.');
+    }
+  });
+
+  function fail(message) {
+    note.textContent = message;
+    note.className = 'signup-note bad';
+    button.disabled = false;
+    button.textContent = 'Get early access';
+  }
+
+  function done() {
+    signup.innerHTML = '<p style="margin:0;font-size:18px;color:var(--cream)">'
+      + 'You&rsquo;re on the list. We&rsquo;ll be in touch.</p>';
+    note.textContent = 'Thank you — check your inbox for a confirmation.';
+    note.className = 'signup-note';
   }
 
   /* ── reveal on scroll ───────────────────────────────────────────── */
